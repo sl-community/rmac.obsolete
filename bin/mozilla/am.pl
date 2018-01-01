@@ -2726,7 +2726,7 @@ sub audit_control {
   AM->closedto(\%myconfig, \%$form);
   
   my %checked;
-  for (qw(revtrans audittrail aruniq apuniq gluniq souniq pouniq trackingitemsuniq nontrackingitemsuniq)) { $checked{$_} = "checked" if $form->{$_} }
+  for (qw(revtrans audittrail aruniq apuniq gluniq souniq pouniq trackingitemsuniq nontrackingitemsuniq extendedlog)) { $checked{$_} = "checked" if $form->{$_} }
  
   $form->header;
   
@@ -2752,6 +2752,10 @@ sub audit_control {
 	<tr>
 	  <th align=right>|.$locale->text('Activate Audit trail').qq|</th>
 	  <td><input name=audittrailview class=checkbox type=checkbox value="1" $checked{audittrail} disabled="disabled"></td>
+	</tr>
+	<tr>
+	  <th align=right>|.$locale->text('Activate Extended Log').qq|</th>
+	  <td><input name=extendedlog class=checkbox type=checkbox value="1" $checked{extendedlog}></td>
 	</tr>
 	<input name=audittrail type=hidden value="1">
 	<!-- <tr>
@@ -3235,10 +3239,10 @@ sub company_logo {
 </pre>
 <div class="mainpage">
 <center>
-<a class="mainpageref" href="http://www.runmyaccounts.com" target=_blank><img src=$images/sql-ledger.gif border=0></a>
+<a class="mainpageref" href="http://www.runmyaccounts.com" target="_blank"><img src=$images/sql-ledger.gif border=0></a>
 <h1 class=login>|.$locale->text('Version').qq| $release</h1>
 <p>
-<a class="roadmapref" href="$roadmap" target=_blank>roadmap</a>
+<a class="roadmapref" href="$roadmap" target="_blank">roadmap</a>
 </p>
 <br/>
 <h1 class=login>

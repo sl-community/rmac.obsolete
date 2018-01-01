@@ -90,7 +90,7 @@ sub new {
   $self->{menubar} = 1 if $self->{path} =~ /lynx/i;
 
   $self->{version} = "2.8.33";
-  $self->{dbversion} = "2.8.12";
+  $self->{dbversion} = "2.8.13";
 
   bless $self, $type;
   
@@ -257,10 +257,10 @@ sub error {
 
 	if ( $dbmsg && !$errormessages) {
 	   print qq|<body><h2 class=error>Error!</h2>;
-       <p><b class=dberror>$self->{dbmsg}</b>|;
+       <p><b id=errorMessage class=dberror>$self->{dbmsg}</b>|;
 	}else {
 	   print qq|<body><h2 class=error>Error!</h2>
-	   <p><b>$self->{msg}</b>|;
+	   <p><b id=errorMessage>$self->{msg}</b>|;
 
        print qq|<h2 class=dberror>DB Error!</h2>
 
@@ -2205,7 +2205,7 @@ sub all_vc {
       $name_ext =~ s/^, //;
       $name_ext =~ s/,$//;
       
-      $ref->{name} .= " - $name_ext" if $name_ext;
+      $ref->{name} .= " $name_ext" if $name_ext;
       $ref->{name} =~ s/(.{64}).*/$1/;
       # ISNA_end
       push @{ $self->{"all_$vc"} }, $ref;
