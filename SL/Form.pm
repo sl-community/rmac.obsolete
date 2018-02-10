@@ -90,12 +90,18 @@ sub new {
   $self->{menubar} = 1 if $self->{path} =~ /lynx/i;
 
   $self->{version} = "2.8.33";
-  $self->{dbversion} = "2.8.13";
+  $self->{dbversion} = "2.8.14";
 
   bless $self, $type;
   
 }
 
+sub logtofile {
+    my ($self, $txt) = @_;
+    open(FH, '>> logtofile.txt');
+    print FH "$txt\n";
+    close(FH);
+}
 
 sub debug {
   my ($self, $file) = @_;

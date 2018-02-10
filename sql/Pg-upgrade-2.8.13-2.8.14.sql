@@ -8,5 +8,5 @@ ALTER TABLE acc_trans_log_deleted ADD COLUMN ts timestamp DEFAULT NOW();
 CREATE TABLE invoice_log_deleted AS SELECT * FROM acc_trans WHERE 1 = 2;
 ALTER TABLE invoice_log_deleted ADD COLUMN ts timestamp DEFAULT NOW();
 
--- UPDATE defaults SET fldvalue = '2.8.14' where fldname = 'version';
+UPDATE defaults SET fldvalue = '2.8.14' where fldname = 'version';
 
