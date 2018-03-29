@@ -78,14 +78,14 @@ sub startup {
 
 sub logged_in {
     my $self = shift;
-
+    
     my ($controller, $username) = @_;
-
+    
     my $cookies = $controller->req->cookies;
-
+    
     my $user_has_cookie = 0;
     my $cookievalue;
-
+    
     foreach (@$cookies) {
         if ($_->name eq "SL-$username") {
             $user_has_cookie = 1;
@@ -93,30 +93,33 @@ sub logged_in {
             last;
         }
     }
-
+    
     my $sessionkey = $controller->userconfig->val("sessionkey");
-
-	my $s = "";
-	my %ndx = ();
-	my $l = length $cookievalue;
+    
+    my $s = "";
+    my %ndx = ();
+    my $l = length $cookievalue;
     my $j;
-
+    
     for my $i (0 .. $l - 1) {
         $j = substr($sessionkey, $i * 2, 2);
-	    $ndx{$j} = substr($cookievalue, $i, 1);
+        $ndx{$j} = substr($cookievalue, $i, 1);
     }
-
+    
     for (sort keys %ndx) {
-	    $s .= $ndx{$_};
+        $s .= $ndx{$_};
     }
-
+    
     $l = length $username;
     my $login = substr($s, 0, $l);
     my $password = substr($s, $l, (length $s) - ($l + 10));
-
+    
     # validate cookie
     my $ok = 1;
-    if (($login ne $username) || ($controller->userconfig->val("password") ne crypt $password, substr($username, 0, 2))) {
+    if (($login ne $username) ||
+            ($controller->userconfig->val("password")
+             ne
+             crypt $password, substr($username, 0, 2))) {
         $ok = 0;
     }
 
