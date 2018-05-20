@@ -1427,7 +1427,7 @@ sub save_defaults {
     $dbh->do($query) || $form->dberror($query);
   }
  
-  for (qw(selectedaccount glnumber sinumber vinumber batchnumber vouchernumber sonumber ponumber sqnumber rfqnumber partnumber employeenumber customernumber vendornumber projectnumber precision)) {
+  for (qw(transitionaccount selectedaccount glnumber sinumber vinumber batchnumber vouchernumber sonumber ponumber sqnumber rfqnumber partnumber employeenumber customernumber vendornumber projectnumber precision)) {
     $sth->execute($_, $form->{$_}) || $form->dberror;
     $sth->finish;
   }
@@ -1564,13 +1564,16 @@ sub save_taxes {
 
   foreach my $item (split / /, $form->{taxaccounts}) {
     my ($chart_id, $i) = split /_/, $item;
-    my $rate = $form->parse_amount($myconfig, $form->{"taxrate_$i"}) / 100;
-    $query = qq|INSERT INTO tax (chart_id, rate, taxnumber, validto)
-                VALUES ($chart_id, $rate, |
-		.$dbh->quote($form->{"taxnumber_$i"}).qq|, |
-		.$form->dbquote($form->dbclean($form->{"validto_$i"}), SQL_DATE)
-		.qq|)|;
-    $dbh->do($query) || $form->dberror($query);
+	print STDERR "$i " . $form->{"taxrate_$i"} . "\n";
+    if ( $form->{"taxrate_$i"} ne "" ) {
+      my $rate = $form->parse_amount($myconfig, $form->{"taxrate_$i"}) / 100;
+      $query = qq|INSERT INTO tax (chart_id, rate, taxnumber, validto)
+                  VALUES ($chart_id, $rate, |
+		  .$dbh->quote($form->{"taxnumber_$i"}).qq|, |
+		  .$form->dbquote($form->dbclean($form->{"validto_$i"}), SQL_DATE)
+		  .qq|)|;
+      $dbh->do($query) || $form->dberror($query);
+    }
   }
 
   my $rc = $dbh->commit;
