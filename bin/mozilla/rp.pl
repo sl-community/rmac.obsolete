@@ -753,7 +753,7 @@ sub report {
 
 	$overpaidlabel = $locale->text('Overpaid');
 
-    my $duedateto = $form->current_date(\%myconfig);
+  my $duedateto = $form->current_date(\%myconfig);
 
     print qq|
         $vc
@@ -765,14 +765,10 @@ sub report {
 		  <th align=right nowrap>|.$locale->text('Exclude Credits').qq|</th>
 		  <td nowrap width=70><input name=exclude_credits type=checkbox class=checkbox value=on></td>
 		</tr>
-    	<tr>
-		  <th align=right nowrap>|.$locale->text('Level').qq| >= </th>
-		  <td nowrap width=70><select name="level"><option><option value=1>1<option value=2>2<option value=3>3<select></td>
-		</tr>
-    	<tr>
-		  <th align=right nowrap>|.$locale->text('Due Date').qq| <= </th>
-		  <td nowrap width=70><input name="duedateto" type=text size=12 class="date" value="$duedateto" title="$myconfig{dateformat}"></td>
-		</tr>
+    <tr>
+      <th align=right nowrap>|.$locale->text('Due Date').qq| <= </th>
+      <td nowrap width=70><input name="duedateto" type=text size=12 class="date" value="$duedateto" title="$myconfig{dateformat}"></td>
+    </tr>
 
 	<input type=hidden name=action value="$form->{nextsub}">
 |;
@@ -1996,6 +1992,10 @@ sub reminder {
     $option .= "\n<br>" if $option;
     $option .= $form->{customer};
   }
+  if ($form->{duedateto}) {
+    $option .= "\n<br>" if $option;
+    $option .= $locale->text("Due Date") . " : " . $form->{duedateto};
+  }
 
   $title = "$form->{title} / $form->{company}";
 
@@ -2160,7 +2160,7 @@ function CheckAll() {
 
   chop $form->{ids};
 
-  $form->hide_form(qw(title initcallback callback vc department path login ids duedateto level));
+  $form->hide_form(qw(title initcallback callback vc department path login ids duedateto));
   $form->hide_form($form->{vc});
   $form->hide_form(qw(type report));
 
@@ -2686,6 +2686,15 @@ sub do_print_reminder {
         for (qw(name address1 address2 city state zipcode country contact phone fax email)) { $ref->{"shipto$_"} = $ref->{$_} }
       }
       for (@a) { $form->{$_} = $ref->{$_} }
+
+      if ( $form->{id} && $form->{dcn} eq "<%external%>" ) {
+        $query = qq|SELECT dcn FROM ar
+              WHERE id = $form->{id}|;
+        my $sth = $dbh->prepare($query);
+        $sth->execute || $form->dberror($query);
+        $form->{dcn} = $sth->fetchrow_array;
+        $sth->finish;    	
+      }
 
       $form->{rvc} = $form->format_dcn($form->{rvc});
       $form->{dcn} = $form->format_dcn($form->{dcn});

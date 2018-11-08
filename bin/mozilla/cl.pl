@@ -139,6 +139,25 @@ sub list_trans {
         push @bind, $form->{todate};
     }
 
+    my $sort = $form->{sort} ? $form->{sort} : 'transdate';
+    my $sortorder = 'asc' if !$form->{sortorder};
+    if ($form->{sort} eq $form->{oldsort}){
+       $sortorder = $form->{sortorder} eq 'asc' ? 'desc' : 'asc';
+    } else {
+       $sortorder = 'asc';
+    }
+
+    my %sort_positions = {
+        invnumber   => 2,
+        transdate   => 3,
+        description => 4,
+        ordnumber   => 5,
+        name        => 6,
+        amount      => 7,
+        paid        => 8,
+        due         => 9,
+    };
+
     $arap = $form->{arap};
     my $vc = $arap eq 'ar' ? 'customer' : 'vendor';
     my $query = qq|
@@ -148,14 +167,17 @@ sub list_trans {
         JOIN $vc vc ON (vc.id = aa.${vc}_id)
         WHERE aa.amount - aa.paid != 0
         $where
-        ORDER BY aa.transdate|;
+        ORDER BY $sort_positions($sort) $sortorder
+    |;
     my @allrows = $dbs->query( $query, @bind )->hashes or die( 'No transactions found ...' );
 
     my @report_columns = qw(x invnumber transdate description ordnumber name amount paid due);
     my @total_columns = qw(amount paid due);
     my ( %tabledata, %totals, %subtotals );
 
-    for (@report_columns) { $tabledata{$_} = qq|<th><a class="listheading">| . ucfirst $_ . qq|</th>\n| }
+    $href = qq|$form->{script}?action=list_trans|;
+    for (qw(fromdate todate arap path login accno trans_id)){ $href .= "&$_=$form->{$_}" }
+    for (@report_columns) { $tabledata{$_} = qq|<th><a href="$href&sort=$_&oldsort=$sort&sortorder=$sortorder" class="listheading">| . ucfirst $_ . qq|</th>\n| }
 
     print qq|
 <form action="$form->{script}" method="post">
@@ -169,7 +191,6 @@ sub list_trans {
         </tr>
 |;
 
-    my $sort = 'transdate';
     $form->{l_subtotal} = 0;
     my $groupvalue;
     my $i = 0;
@@ -342,40 +363,87 @@ sub book_selected_transactions {
        my $module = $dbs->query($query)->list;
 
        $query = "
-          SELECT id, ar.invnumber, ar.description, ar.ordnumber, ar.transdate, ar.amount
+          SELECT id, 'is.pl' module, ar.invnumber, ar.description, ar.ordnumber, ar.transdate, ar.amount
           FROM ar
           WHERE id IN ($trans)
+          AND invoice
 
           UNION ALL
 
-          SELECT id, ap.invnumber, ap.description, ap.ordnumber, ap.transdate, ap.amount
+          SELECT id, 'ar.pl' module, ar.invnumber, ar.description, ar.ordnumber, ar.transdate, ar.amount
+          FROM ar
+          WHERE id IN ($trans)
+          AND NOT invoice
+
+          UNION ALL
+
+          SELECT id, 'ir.pl' module, ap.invnumber, ap.description, ap.ordnumber, ap.transdate, ap.amount
           FROM ap
           WHERE id IN ($trans)
+          AND invoice
+
+          UNION ALL
+
+          SELECT id, 'ap.pl' module, ap.invnumber, ap.description, ap.ordnumber, ap.transdate, ap.amount
+          FROM ap
+          WHERE id IN ($trans)
+          AND NOT invoice
 
           ORDER BY 1";
 
-        $table = $dbs->query( $query )->xto();
-        $table->modify( table => { cellpadding => "3", cellspacing => "2" } );
-        $table->modify( tr => { class => [ 'listrow0', 'listrow1' ] } );
-        $table->modify( th => { class => 'listheading' }, 'head' );
-        $table->modify( th => { class => 'listtotal' },   'foot' );
-        $table->modify( th => { class => 'listsubtotal' } );
-        $table->modify( th => { align => 'center' },      'head' );
-        $table->modify( th => { align => 'right' },       'foot' );
-        $table->modify( th => { align => 'right' } );
+          #$table = $dbs->query( $query )->xto();
+          #$table->modify( table => { cellpadding => "3", cellspacing => "2" } );
+          #$table->modify( tr => { class => [ 'listrow0', 'listrow1' ] } );
+          #$table->modify( th => { class => 'listheading' }, 'head' );
+          #$table->modify( th => { class => 'listtotal' },   'foot' );
+          #$table->modify( th => { class => 'listsubtotal' } );
+          #$table->modify( th => { align => 'center' },      'head' );
+          #$table->modify( th => { align => 'right' },       'foot' );
+          #$table->modify( th => { align => 'right' } );
 
-        $table->modify( td => { align => 'right' }, [qw(amount)] );
-        $table->calc_totals( [qw(amount)] );
+          #$table->modify( td => { align => 'right' }, [qw(amount)] );
+          #$table->calc_totals( [qw(amount)] );
         print qq|<h3>Transactions to be adjusted ...</h3>|;
 
-        $table->map_cell(
-            sub {
-                my $datum = shift;
-                return qq|<a href="$module?action=edit&id=$datum&path=$form->{path}&login=$form->{login}">$datum</a>|;
-            },
-            'id'
-        );
-        print $table->output;
+        #$table->map_cell(
+        #    sub {
+        #        my $datum = shift;
+        #        return qq|<a href="$module?action=edit&id=$datum&path=$form->{path}&login=$form->{login}">$datum</a>|;
+        #    },
+        #    'id'
+        #);
+        #print $table->output;
+        my @rows = $dbs->query($query)->hashes;
+        print qq|<table>|;
+        print qq|<tr>
+        <th>|.$locale->text("Invoice").qq|</th>
+        <th>|.$locale->text("Description").qq|</th>
+        <th>|.$locale->text("Order Number").qq|</th>
+        <th>|.$locale->text("Date").qq|</th>
+        <th>|.$locale->text("Amount").qq|</th>
+        </tr>
+        |;
+        my $total_amount;
+        for (@rows){
+           $link = "$_->{module}?id=$_->{id}&action=edit&path=$form->{path}&login=$form->{login}";
+           print qq|<tr class="listrow0">
+          <td><a href=$link target=_blank>$_->{invnumber}</a></td>
+          <td>$_->{description}</td>
+          <td>$_->{ordnumber}</td>
+          <td>$_->{transdate}</td>
+          <td align="right">|.$form->format_amount(\%myconfig, $_->{amount}, 2).qq|</td>
+          </tr>|;
+          $total_amount += $_->{amount};
+        }
+        print qq|<tr class="listtotal">
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td align="right">|.$form->format_amount(\%myconfig, $total_amount, 2).qq|</td>
+          </tr>|;
+        print qq|</table>|;
+
    } elsif ($form->{gl_account_id}) {
         my $query = qq|SELECT accno, description FROM chart WHERE id = ?|;
         $table = $dbs->query( $query, $form->{gl_account_id} )->xto();
@@ -428,7 +496,7 @@ sub just_do_it {
            $form->{gl_account_id}, $clearing_accno_id, $form->{trans_id}
       );
       $dbs->commit;
-      $form->info("GL entry updated ...");
+      $form->redirect($locale->text("GL entry updated ..."));
       return;
    }
 
@@ -459,10 +527,15 @@ sub just_do_it {
    my $payment_date;
    my $arap_date;
    my $adjustment_total;
+   my $adjustment_available = $dbs->query("SELECT 0-amount FROM acc_trans WHERE chart_id = ?  AND trans_id = ?",
+      $clearing_accno_id, $form->{trans_id}
+   )->list;
+
    my $ml;
+   my $arap;
    for (@rows){
-      my $arap = $_->{tbl};
-      $ml = ($arap eq 'ap') ? -1 : 1;
+      $arap = $_->{tbl};
+      $ml = ($arap eq 'ap') ? 1 : -1;
       my $ARAP = uc $arap;
       $arap_date = $dbs->query("SELECT transdate FROM $arap WHERE id = ?", $_->{id})->list;
       if ($form->datediff(\%myconfig, $gl_date, $arap_date) > 0 ){
@@ -470,23 +543,43 @@ sub just_do_it {
       } else {
           $payment_date = $gl_date;
       }
+      if ($adjustment_available * $ml < $_->{due}){
+         $amount_to_be_adjusted = $adjustment_available;
+         $adjustment_available = 0;
+      } else {
+         $amount_to_be_adjusted = $_->{due};
+         $adjustment_available -= $_->{due};
+      }
       my $arap_accno_id = $dbs->query("
          SELECT chart_id FROM acc_trans WHERE trans_id = ? AND chart_id IN (SELECT id FROM chart WHERE link LIKE '$ARAP') LIMIT 1", $_->{id}
       )->list;
-      $dbs->query("
-        INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
-        VALUES (?, ?, ?, ?)", $_->{id}, $transition_accno_id, $payment_date, $_->{due} * $ml * -1
-      ) or $form->error($dbs->error);
-      $dbs->query("
-        INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
-        VALUES (?, ?, ?, ?)", $_->{id}, $arap_accno_id, $payment_date, $_->{due} * $ml
-      ) or $form->error($dbs->error);
-      $dbs->query("UPDATE $arap SET paid = paid + ?, datepaid = ? WHERE id = ?", $_->{due}, $payment_date, $_->{id}) or $form->error($dbs->error);
-      $adjustment_total += $_->{due};
+      if ($arap eq 'ap'){
+        $dbs->query("
+          INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
+          VALUES (?, ?, ?, ?)", $_->{id}, $transition_accno_id, $payment_date, $amount_to_be_adjusted
+        ) or $form->error($dbs->error);
+        $dbs->query("
+          INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
+          VALUES (?, ?, ?, ?)", $_->{id}, $arap_accno_id, $payment_date, $_->{due} * -1
+        ) or $form->error($dbs->error);
+      } else {
+        $dbs->query("
+          INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
+          VALUES (?, ?, ?, ?)", $_->{id}, $transition_accno_id, $payment_date, $amount_to_be_adjusted * -1
+        ) or $form->error($dbs->error);
+        $dbs->query("
+          INSERT INTO acc_trans(trans_id, chart_id, transdate, amount)
+		  VALUES (?, ?, ?, ?)", $_->{id}, $arap_accno_id, $payment_date, $_->{due}
+        ) or $form->error($dbs->error);
+      }
+      $dbs->query("UPDATE $arap SET paid = paid + ?, datepaid = ? WHERE id = ?", $amount_to_be_adjusted, $payment_date, $_->{id}) or $form->error($dbs->error);
+      $adjustment_total += $amount_to_be_adjusted;
    }
 
    # Update GL transaction and replace clearing account with transition account
-   $adjustment_total *= $ml;
+   if ($arap eq 'ap'){
+      $adjustment_total *= -1;
+   }
 
    $dbs->query("
      INSERT INTO acc_trans (trans_id, chart_id, amount, transdate)
@@ -499,6 +592,17 @@ sub just_do_it {
       WHERE chart_id = ? AND trans_id = ?",
       $adjustment_total, $clearing_accno_id, $form->{trans_id}
    );
+
+   # check if the updated amount in above step equals to 0
+   $amount = $dbs->query("
+     SELECT amount FROM acc_trans WHERE chart_id = ? AND trans_id = ?",
+     $clearing_accno_id, $form->{trans_id}
+   )->list;
+
+   # delete if it is zero
+   if (!$amount){
+      $dbs->query("DELETE FROM acc_trans WHERE chart_id = ? AND trans_id = ?", $clearing_accno_id, $form->{trans_id});
+   }
 
    $dbs->commit;
 

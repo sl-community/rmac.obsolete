@@ -529,7 +529,7 @@ sub post_as_new {
 
   for (qw(id printed emailed queued)) { delete $form->{$_} }
   if ($pref{remove_payment_on_post_as_new}){ 
-     for my $i (1 .. $form->{paidaccounts} - 1){ map { delete $form->{"${_}_$i"} } qw(datepaid source memo paid AR_paid) }
+    for my $i (1 .. $form->{paidaccounts} - 1){ map { delete $form->{"${_}_$i"} } qw(datepaid source memo paid AR_paid) }
   }
   &post;
 
