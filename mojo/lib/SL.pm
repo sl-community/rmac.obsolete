@@ -50,28 +50,6 @@ sub startup {
     $auth ->any('/gobd')                ->to('GoBD#index');
     $auth ->get('/gobd/show/#filename') ->to('GoBD#show');
     $auth ->get('/gobd/download')       ->to('GoBD#download');
-
-
-    # Here we get when called from menu.pl:
-    $r->any(
-        '/' => sub {
-            my $c = shift;
-
-            my ($run, $login);
-            
-            unless ($run =  $c->param('run')) {
-                $c->render(text => "No run parameter", status => 400);
-                return undef;
-            }
-            unless ($login =  $c->param('login')) {
-                $c->render(text => "No login parameter", status => 400);
-                return undef;
-            }
-
-            my $url = $c->url_for("/$run")->query(login => $login);
-            $c->redirect_to($url);
-        }
-    );
 }
 
 
