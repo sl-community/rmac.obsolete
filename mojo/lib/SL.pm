@@ -59,20 +59,13 @@ sub logged_in {
     
     my ($controller, $username) = @_;
     
-    my $cookies = $controller->req->cookies;
-    
-    my $user_has_cookie = 0;
-    my $cookievalue;
-    
-    foreach (@$cookies) {
-        if ($_->name eq "SL-$username") {
-            $user_has_cookie = 1;
-            $cookievalue = $_->value;
-            last;
-        }
-    }
+    my $cookievalue = $controller->cookies->{"SL-$username"};
     
     my $sessionkey = $controller->userconfig->val("sessionkey");
+
+    # say STDERR "*** cookievalue: $cookievalue";
+    # say STDERR "*** sesssionkey: $sessionkey";
+    # say STDERR "*** password:    ", $controller->userconfig->val("password");
     
     my $s = "";
     my %ndx = ();
