@@ -5,9 +5,16 @@
 <h1 class='listtop'>Testing</h1>
 
 
+<!--
 <h2>Cookies:</h2>
 <pre>
 <%= dumper($self->req->cookies) %>
+</pre>
+-->
+
+<h2>Cookies (self-parsed):</h2>
+<pre>
+<%= dumper($self->cookies) %>
 </pre>
 
 
