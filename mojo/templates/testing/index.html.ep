@@ -4,26 +4,23 @@
 
 <h1 class='listtop'>Testing</h1>
 
-<h2><%= $msg %></h2>
 
-<p> Cookies:
+<h2>Cookies:</h2>
 <pre>
 <%= dumper($self->req->cookies) %>
 </pre>
-</p>
 
 
-<p> Session:
+<h2>Session:</h2>
 <pre>
 <%= dumper($self->session) %>
 </pre>
-</p>
 
-<p> Config:
+
+<h2>Config:</h2>
 <pre>
 <%= dumper(userconfig) %>
 </pre>
-</p>
 
 <hr/>
 <br/>
