@@ -44,7 +44,7 @@ sub startup {
     );
 
 
-    $auth ->get('/testing')   ->to('Testing#index');
+    $auth ->any('/testing')   ->to('Testing#index');
     $auth ->get('/docs')      ->to('Docs#index');
     
     $auth ->any('/gobd')                ->to('GoBD#index');
