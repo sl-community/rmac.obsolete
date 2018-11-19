@@ -83,6 +83,7 @@ $self{texts} = {
   'List Projects'               => 'Projekte aufzeigen',
   'List SIC'                    => 'SIC aufzeigen',
   'List Warehouses'             => 'Warenlager aufzeigen',
+  'Mojolicious Testpage'        => 'Mojolicious Testseite',
   'New Window'                  => 'Neues Fenster',
   'Non-taxable'                 => 'Steuerfrei',
   'Open'                        => 'Offen',
