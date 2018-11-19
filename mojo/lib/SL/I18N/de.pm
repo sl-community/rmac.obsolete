@@ -24,7 +24,8 @@ our %Lexicon = (
 
     # Testseite:
     'Testpage'              => 'Testseite',
-    'type'                  =>     'Typ',
+    'type'                  => 'Typ',
+    'Parameters'            => 'Parameter',
     'Configuration'         => 'Konfiguration',
     'Environment variables' => 'Umgebungsvariablen',
 );
