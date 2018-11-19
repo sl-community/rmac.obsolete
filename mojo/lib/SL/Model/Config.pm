@@ -102,8 +102,22 @@ sub new {
         );
 
         # Language:
-        my $lang = $_self->{userconfig}{countrycode} || 'en';
+        my $lang;
+
+        if (exists $_self->{userconfig}{countrycode} &&
+                $_self->{userconfig}{countrycode} eq '') {
+            $_self->{userconfig}{x_language} = 'en';
+        }
+        
+        $lang = $_self->{userconfig}{x_language} ||
+            $_self->{userconfig}{countrycode} ||
+            $_self->{globalconfig}{language} ||
+            'en';
         $lang =~ s/^(..).*/$1/; # Only first two letters
+
+        # For Mojo purposes we don't want to differentiate between
+        # Swiss and German language. Maybe that changes in the future...
+        $lang = 'de' if $lang eq 'ch';
         $_self->{userconfig}{x_language} = $lang;
 
         # Some root specials:
