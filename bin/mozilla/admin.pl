@@ -375,8 +375,15 @@ sub admin_button {
     my ($label, $path) = @_;
 
     use File::Basename;
-    my $content_prefix = dirname($ENV{SCRIPT_NAME});
-
+    # SCRIPT_NAME could be
+    #   /admin.pl
+    #   /rmac/admin.pl
+    #   /rmac/community/admin.pl
+    #   ...
+    # We need the URL prefix.
+    my $content_prefix = $ENV{SCRIPT_NAME};
+    $content_prefix =~ s|/admin\.pl$||;
+    
     return "\n" .
         qq|<button type="submit" class="submit" | .
         qq|name="login" value="root login" | .
