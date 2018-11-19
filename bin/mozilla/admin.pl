@@ -355,9 +355,9 @@ $dbdrivers
 $nologin
 $software
 
-<input type=submit class=submit name=action value="|.$locale->text('Logout').qq|">
+<input type=submit class=submit name=action value="|.$locale->text('Logout').qq|">|.
+    admin_button("Testpage", "testing/admin").qq|
 
-<button type=submit class=submit name=login value="root login" formmethod="$form_method" formaction="/rmac/mojo.pl/testing">Testing</button>
 </form>
 
 |.$locale->text('Click on login name to edit!').qq|
@@ -370,6 +370,23 @@ $software
 
 }
 
+
+sub admin_button {
+    my ($label, $path) = @_;
+
+    use File::Basename;
+    my $content_prefix = dirname($ENV{SCRIPT_NAME});
+
+    return "\n" .
+        qq|<button type="submit" class="submit" | .
+        qq|name="login" value="root login" | .
+        qq|formmethod="$form_method" | .
+        qq|formaction="$content_prefix/mojo.pl/$path">| .
+        $locale->text($label) .
+        qq|</button>\n|;
+
+    # Localization: see locale/*/admin
+}
 
 
 sub form_header {

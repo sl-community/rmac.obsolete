@@ -77,6 +77,7 @@ $self{texts} = {
   'Supervisor'                  => 'Vorarbeiter',
   'Sybase Database Administration' => 'Sybase Datenbank-Verwaltung',
   'Templates'                   => 'Druckvorlagen',
+  'Testpage'                    => 'Testseite',
   'The following Datasets are not in use and can be deleted' => 'Die folgenden Datensets werden nicht verwendet und können gelöscht werden',
   'The following Datasets need to be updated' => 'Folgende Datensets müssen aktualisiert werden',
   'This is a preliminary check for existing sources. Nothing will be created or deleted at this stage!' => 'In diesem Schritt werden bestehende Datensets gesucht. Es werden noch keine Änderungen vorgenommen!',
