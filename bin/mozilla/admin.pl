@@ -1269,7 +1269,9 @@ sub dbselect_source {
 <input type=submit class=submit name=action value="|.$locale->text('Create Dataset').qq|">
 <input type=submit class=submit name=action value="|.$locale->text('Update Dataset').qq|">
 <input type=submit class=submit name=action value="|.$locale->text('Delete Dataset').qq|">
-
+|
+    . admin_button("Backup/Restore", "testing/admin")
+    . qq|
 </form>
 
     </td>
