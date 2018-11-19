@@ -355,9 +355,9 @@ $dbdrivers
 $nologin
 $software
 
-<input type=submit class=submit name=action value="|.$locale->text('Logout').qq|">|.
-    admin_button("Testpage", "testing/admin").qq|
-
+<input type=submit class=submit name=action value="|.$locale->text('Logout').qq|">|
+#    . admin_button("Testpage", "testing/admin")
+    .qq|
 </form>
 
 |.$locale->text('Click on login name to edit!').qq|
@@ -374,13 +374,13 @@ $software
 sub admin_button {
     my ($label, $path) = @_;
 
-    use File::Basename;
-    # SCRIPT_NAME could be
+    # $ENV{SCRIPT_NAME} could be
     #   /admin.pl
     #   /rmac/admin.pl
     #   /rmac/community/admin.pl
     #   ...
     # We need the URL prefix.
+    
     my $content_prefix = $ENV{SCRIPT_NAME};
     $content_prefix =~ s|/admin\.pl$||;
     
