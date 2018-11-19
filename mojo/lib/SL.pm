@@ -44,8 +44,7 @@ sub startup {
     );
 
 
-    $auth ->any('/testing')   ->to('Testing#index');
-    $auth ->get('/docs')      ->to('Docs#index');
+    $auth ->any('/testing/:type')->to('Testing#index');
     
     $auth ->any('/gobd')                ->to('GoBD#index');
     $auth ->get('/gobd/show/#filename') ->to('GoBD#show');
