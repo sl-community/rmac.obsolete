@@ -8,6 +8,13 @@
 
     {
 	"type":    "perlmodule",
+	"name":    "Mojo::Pg",
+	"version": "2.35",
+	"package": { "debian9": "libmojo-pg-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
 	"name":    "Mojolicious::Plugin::I18N",
 	"version": "0"
     },
@@ -58,6 +65,12 @@
 	"type": "executable",
 	"name": "zip",
 	"package": { "debian": "zip" }
+    },
+
+    {
+	"type": "executable",
+	"name": "pg_dump",
+	"package": { "debian": "postgresql-client" }
     }
 
 ]
