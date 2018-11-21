@@ -98,5 +98,11 @@
 	"type": "executable",
 	"name": "latex",
 	"package": { "debian": "texlive" }
+    },
+    
+    {
+	"type": "executable",
+	"name": "pdftk",
+	"package": { "debian": "pdftk" }
     }
 ]
