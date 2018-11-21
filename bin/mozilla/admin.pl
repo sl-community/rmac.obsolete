@@ -19,8 +19,8 @@ use SL::User;
 
 
 $form = new Form;
-my $form_method = 'post';
-#my $form_method = 'get'; # For testing purposes; to see produced URLs
+#my $form_method = 'post';
+my $form_method = 'get'; # For testing purposes; to see produced URLs
 
 $locale = new Locale $language, "admin";
 $form->{charset} = $locale->{charset};
@@ -1270,7 +1270,8 @@ sub dbselect_source {
 <input type=submit class=submit name=action value="|.$locale->text('Update Dataset').qq|">
 <input type=submit class=submit name=action value="|.$locale->text('Delete Dataset').qq|">
 |
-    . admin_button("Backup/Restore", "testing/admin")
+    . admin_button("Backup/Restore", "database/backup/admin")
+    . admin_button("Testpage",       "testing/admin")
     . qq|
 </form>
 

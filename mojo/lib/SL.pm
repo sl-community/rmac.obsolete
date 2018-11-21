@@ -49,6 +49,9 @@ sub startup {
     $auth ->any('/gobd')                ->to('GoBD#index');
     $auth ->get('/gobd/show/#filename') ->to('GoBD#show');
     $auth ->get('/gobd/download')       ->to('GoBD#download');
+
+    # ":who" can be 'user' or 'admin':
+    $auth ->any('/database/backup/:who')->to('Database#index');
 }
 
 

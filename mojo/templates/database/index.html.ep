@@ -1,0 +1,35 @@
+% layout 'admin'   if $type eq 'admin';
+% title 'Backup/Restore';
+% languages userconfig->val('x_language');
+
+<center>
+
+  <h1>Backup/Restore</h1>
+  <hr>
+  <h2>Backup</h2>
+
+  <form>
+  <table>
+    %= tag 'tr', class => 'listheading', begin
+    %=     tag 'th', 'Dataset'
+    %=     tag 'th', 'Size'
+    %=     tag 'th', 'Action'
+    %= end
+    %  foreach my $row (@$dbinfos) {
+    %= tag tr => begin
+    %=     tag 'td', $row->[0]
+    %=     tag 'td', align => 'right', $row->[1]
+    %=     tag td => begin
+    %=         tag 'button', class => 'submit', name => 'login', value => 'root login', formmethod => 'get', formaction => '', 'Backup'
+    %=     end
+    %= end
+    %  }
+  </table>
+  </form>
+  <hr>
+  <h2>Restore</h2>
+
+  <p>Bla bla...</p>
+  <hr>
+</center>
+
