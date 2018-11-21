@@ -33,3 +33,5 @@
   <hr>
 </center>
 
+
+%= include '_include/query_infos'
