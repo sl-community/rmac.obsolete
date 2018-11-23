@@ -21,6 +21,13 @@
 
     {
 	"type":    "perlmodule",
+	"name":    "Mojo::Pg",
+	"version": "2.35",
+	"package": { "debian": "libmojo-pg-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
 	"name":    "DBI",
 	"version": "0",
 	"package": { "debian": "libdbi-perl" }
@@ -42,9 +49,30 @@
 
     {
 	"type":    "perlmodule",
+	"name":    "Date::Parse",
+	"version": "0",
+	"package": { "debian": "libtimedate-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
 	"name":    "File::pushd",
 	"version": "0",
 	"package": { "debian": "libfile-pushd-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
+	"name":    "GD::Graph",
+	"version": "0",
+	"package": { "debian": "libgd-graph-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
+	"name":    "CGI::FormBuilder",
+	"version": "0",
+	"package": { "debian": "libcgi-formbuilder-perl" }
     },
 
     {
@@ -71,6 +99,17 @@
 	"type": "executable",
 	"name": "pg_dump",
 	"package": { "debian": "postgresql-client" }
-    }
+    },
 
+    {
+	"type": "executable",
+	"name": "latex",
+	"package": { "debian": "texlive" }
+    },
+    
+    {
+	"type": "executable",
+	"name": "pdftk",
+	"package": { "debian": "pdftk" }
+    }
 ]
