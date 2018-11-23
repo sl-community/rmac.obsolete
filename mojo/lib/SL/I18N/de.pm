@@ -18,7 +18,10 @@ our %Lexicon = (
     # Buttons:
     'Continue'     => 'Weiter',
     'Download ZIP' => 'ZIP herunterladen',
-
+    'Download dump' => 'Dump herunterladen',
+    'Back to database administration' => 'Zurück zur Datenbankverwaltung',
+    'Back to main page' => 'Zurück zur Hauptseite',
+    
     # Fehler:
     'Incorrect date format' => 'Falsches Datumsformat',
 
@@ -29,6 +32,13 @@ our %Lexicon = (
     'Parameters'            => 'Parameter',
     'Configuration'         => 'Konfiguration',
     'Environment variables' => 'Umgebungsvariablen',
+
+    # Datenbank Backup/Restore:
+    'Backup' => 'Sichern',
+    'Restore' => 'Wiederherstellen',
+    'Dataset' => 'Datenset',
+    'Size'  => 'Größe',
+    'Action' => 'Aktion',
 );
 
 

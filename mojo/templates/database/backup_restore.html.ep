@@ -1,38 +1,65 @@
 % layout 'admin';
-% title 'Backup/Restore';
+% title l('Backup') . '/' . l('Restore');
 % languages userconfig->val('x_language');
 
 <center>
 
-  <h1>Backup/Restore</h1>
+  <h1><%= l('Backup') . '/' . l('Restore') %></h1>
   <hr>
-  <h2>Backup</h2>
+
+
+  <h2><%= l 'Backup' %></h2>
 
   <form>
     %= tag 'hidden', name => 'login', value => 'root login';
   <table>
     %= tag 'tr', class => 'listheading', begin
-    %=     tag 'th', 'Dataset'
-    %=     tag 'th', 'Size'
-    %=     tag 'th', 'Action'
+    %=     tag 'th', l 'Dataset'
+    %=     tag 'th', l 'Size'
+    %=     tag 'th', l 'Action'
     %= end
     %  foreach my $row (@$dbinfos) {
     %= tag 'tr', class => 'listrow0', => begin
     %=     tag 'td', $row->[0]
     %=     tag 'td', align => 'right', $row->[1]
     %=     tag td => begin
-    %=         tag 'button', class => 'submit', formaction => url_for('dbbackup') . "$row->[0]", 'Download dump'
+    %=         tag 'button', class => 'submit', formaction => url_for('dbbackup') . "$row->[0]", l 'Download dump'
     %=     end
     %= end
     %  }
   </table>
   </form>
   <hr>
-  <h2>Restore</h2>
+
+  
+  <h2><%= l 'Restore' %></h2>
 
   <p>Coming soon...</p>
   <hr>
 </center>
 
 
-%# include '_include/query_infos'
+% our $admin_button;
+%= include '_include/admin_button'
+
+% use File::Basename;
+% my $prefix = dirname(url_for('/')); 
+
+<form method="post" action="<%= $prefix %>/admin.pl">
+<input type="hidden" name="login" value="root login">
+
+<%= $admin_button->('pg_database_administration', l 'Back to database administration') %>
+<%= $admin_button->('list_users', l 'Back to main page') %>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+%#%= include '_include/query_infos'
