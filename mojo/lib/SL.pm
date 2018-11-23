@@ -50,8 +50,8 @@ sub startup {
     $auth ->get('/gobd/show/#filename') ->to('GoBD#show');
     $auth ->get('/gobd/download')       ->to('GoBD#download');
 
-    # ":who" can be 'user' or 'admin':
-    $auth ->any('/database/backup/:who')->to('Database#index');
+    $auth ->any('/db_mgmt/admin/backup_restore')->to('Database#backup_restore');
+    $auth ->any('/db_mgmt/admin/backup/:dbname')->to('Database#backup')->name('dbbackup');
 }
 
 

@@ -1,4 +1,4 @@
-% layout 'admin'   if $type eq 'admin';
+% layout 'admin';
 % title 'Backup/Restore';
 % languages userconfig->val('x_language');
 
@@ -9,6 +9,7 @@
   <h2>Backup</h2>
 
   <form>
+    %= tag 'hidden', name => 'login', value => 'root login';
   <table>
     %= tag 'tr', class => 'listheading', begin
     %=     tag 'th', 'Dataset'
@@ -16,11 +17,11 @@
     %=     tag 'th', 'Action'
     %= end
     %  foreach my $row (@$dbinfos) {
-    %= tag tr => begin
+    %= tag 'tr', class => 'listrow0', => begin
     %=     tag 'td', $row->[0]
     %=     tag 'td', align => 'right', $row->[1]
     %=     tag td => begin
-    %=         tag 'button', class => 'submit', name => 'login', value => 'root login', formmethod => 'get', formaction => '', 'Backup'
+    %=         tag 'button', class => 'submit', formaction => url_for('dbbackup') . "$row->[0]", 'Download dump'
     %=     end
     %= end
     %  }
@@ -29,9 +30,9 @@
   <hr>
   <h2>Restore</h2>
 
-  <p>Bla bla...</p>
+  <p>Coming soon...</p>
   <hr>
 </center>
 
 
-%= include '_include/query_infos'
+%# include '_include/query_infos'
