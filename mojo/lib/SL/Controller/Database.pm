@@ -19,10 +19,19 @@ FROM pg_database
 WHERE datname NOT IN ('postgres', 'template0', 'template1')
 ORDER BY datname
 };
+
     my $pg = $c->mojo_pg->{object};
+
+    my $dbinfos = eval {
+        $pg->db->query($sql)->arrays->to_array
+    };
+    return if $c->exception("Database problem");
+
+    
+    #return $c->render('error', error => "Database connection could not be established", detail => $@) if $@;
     
     $c->render(
-        dbinfos => $pg->db->query($sql)->arrays->to_array,
+        dbinfos => $dbinfos
     );
 }
 

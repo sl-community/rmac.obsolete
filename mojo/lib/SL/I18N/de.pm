@@ -22,8 +22,10 @@ our %Lexicon = (
     'Back to database administration' => 'Zurück zur Datenbankverwaltung',
     'Back to main page' => 'Zurück zur Hauptseite',
     
-    # Fehler:
+    # Errors:
+    'Error' => 'Fehler',
     'Incorrect date format' => 'Falsches Datumsformat',
+    'Database problem'  => 'Problem mit der Datenbank',
 
     # Testseite:
     'Testpage'              => 'Testseite',
@@ -39,6 +41,9 @@ our %Lexicon = (
     'Dataset' => 'Datenset',
     'Size'  => 'Größe',
     'Action' => 'Aktion',
+
+    
+    
 );
 
 

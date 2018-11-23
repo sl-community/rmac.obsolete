@@ -132,6 +132,18 @@ sub register {
         }
     );
 
+    
+    $app->helper(
+        exception => sub {
+            my ($c, $error) = @_;
+            
+            return 0 unless $@;  # No exception - no error page needed.
+            
+            $c->render('error', error => $error, detail => $@);
+
+            return 1;
+        }
+    );
 
     
 }
