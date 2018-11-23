@@ -1,40 +1,64 @@
 package SL::Controller::Database;
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::Pg;
 
 use SL::Model::Config;
+use strict;
+use warnings;
 use utf8;
+use POSIX qw/strftime/;
 
-sub index {
+
+sub backup_restore {
     my $c = shift;
 
-    my $dbuser = $c->param('dbuser');  # This is *really* needed
-    my $dbpasswd = $c->param('dbpasswd');
-    my $dbhost = $c->param('dbhost');
-    my $dbport = $c->param('dbport') || 5432;
-    my $dbdefault = $c->param('dbdefault');
-
-    my $pg = Mojo::Pg->new("postgresql://$dbuser:$dbpasswd\@$dbhost:$dbport/$dbdefault");
-    # my $version =
-    #     $pg->db->query('select version() as version')->hash->{version};
-
-    my $sql = qq|
+    my $sql = qq{
 SELECT
   datname,
-  (SELECT pg_size_pretty(pg_database_size(datname)))
+  (SELECT round(pg_database_size(datname) / 1024.0 / 1024.0, 1)) || ' MB'
 FROM pg_database
 WHERE datname NOT IN ('postgres', 'template0', 'template1')
-|;
-    
-    my $dbinfos =  $pg->db->query($sql)->arrays->to_array;
-    #map { $_ = $_->[0] } @$dbinfos;
+ORDER BY datname
+};
+    my $pg = $c->mojo_pg->{object};
     
     $c->render(
-        type => $c->param('who'),
-        dbinfos => $dbinfos,
+        dbinfos => $pg->db->query($sql)->arrays->to_array,
     );
 }
 
+
+sub backup {
+    my $c = shift;
+
+    use Data::Dumper;
+
+    #print STDERR Dumper $c->pg;
+
+    my $dbname = $c->mojo_pg->{access_data}{dbname} || 'database';
+    my $iso_date = strftime("%Y-%m-%d", localtime);
+    
+    $c->res->headers->content_type("application/octet-stream");
+    $c->res->headers->content_disposition(
+        "attachment; filename=${dbname}_${iso_date}.sql.gz"
+    );
+
+    my $pg_dump_cmd = join(' ',
+                           'pg_dump',
+                           '--dbname', $c->mojo_pg->{connstr},
+                           '| gzip -c'
+                       );
+    say STDERR $pg_dump_cmd;
+    
+    open(my $cmd_handle, "-|", $pg_dump_cmd) || die $!;
+
+    my $content;
+    while (read($cmd_handle, $content, 1024) ) {
+        
+        $c->write($content);
+    }
+    close $cmd_handle;
+    $c->finish();
+}
 
 
 1;

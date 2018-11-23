@@ -9,6 +9,7 @@ use Cwd 'abs_path';
 use File::Basename;
 use File::Spec;
 use Data::Dumper;
+use Mojo::Home;
 
 my $_self;
 
@@ -22,15 +23,12 @@ sub new {
 
     bless $_self, $class;
 
-    my $this_module_dir = dirname abs_path __FILE__;
-    
-    # -> e.g. /home/user1/projects/runmyaccounts/mojo/lib/SL/Model
-    
-    # Throw away last 4 components to get the project root:
-    my @dirs = File::Spec->splitdir($this_module_dir);
-    splice @dirs, -4;
-    my $pr = File::Spec->catdir(@dirs);
+    # Detect application home:
+    my $pr = Mojo::Home->new->detect->to_string;
 
+    # Ensure that this voodoo gave us the correct path:
+    -e "$pr/mojo.pl" || die "Invalid project root: $pr";
+    
     $_self->{globalconfig}{x_project_root} = $pr;
 
     my $global_configfile = "$pr/sql-ledger.conf";
