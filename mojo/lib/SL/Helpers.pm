@@ -1,10 +1,16 @@
 package SL::Helpers;
 use base 'Mojolicious::Plugin';
+use strict;
+use warnings;
 use Cwd;
+use Storable;
+use v5.10;
+use File::Path qw(make_path);
 
 use lib ("mojo/lib");
 use SL::Model::Config;
 use Time::Piece;
+use Mojo::Pg;
 
 
 sub register {
@@ -38,7 +44,7 @@ sub register {
             my %cookies = ();
             foreach (split(/; /, $cookie_raw)) {
                 my ($cookie, $value) = split(/=/);
-                foreach $ch ('\+','\%3A\%3A','\%26','\%3D','\%2C','\%3B','\%2B','\%25') {
+                foreach my $ch ('\+','\%3A\%3A','\%26','\%3D','\%2C','\%3B','\%2B','\%25') {
                     $cookie =~ s/$ch/$decode{$ch}/g;
                     $value =~ s/$ch/$decode{$ch}/g;
                 }
@@ -78,7 +84,74 @@ sub register {
         }
     );
 
+    $app->helper(
+        mojo_pg => sub {
+            my $c = shift;
+
+            my $myspool = $c->userconfig->val('x_myspool');
+            -d $myspool || make_path($myspool) || die $!;
+            
+            my $access_data;
+            my $access_data_file
+                = File::Spec->catfile($myspool, "access_data");;
+            
+            if ($c->param('dbuser')) {
+                # We are most likely in "Accounting / Database Administration"
+                # Let's pick up all these values and store them in a
+                # personal spool file for future use: 
+            
+                $access_data = {
+                    dbuser    => $c->param('dbuser'),
+                    dbpasswd  => $c->param('dbpasswd'),
+                    dbhost    => $c->param('dbhost'),
+                    dbport    => $c->param('dbport'),
+                    dbname    => $c->param('dbname'),
+                    dbdefault => $c->param('dbdefault'),
+                };
+            }
+            else { # no dbuser given
+                $access_data = retrieve($access_data_file);
+
+                # merge current params
+                foreach (qw(dbuser dbpasswd dbhost dbport dbname dbdefault)) {
+                    $access_data->{$_} = $c->param($_)
+                        if defined $c->param($_);
+                }
+            }
+
+            store $access_data, $access_data_file;
+            my $connstr = _build_connstr($access_data);
+
+            state $pg = Mojo::Pg->new($connstr);
+
+            return {
+                object => $pg,
+                connstr => $connstr,
+                access_data => $access_data,
+            };
+        }
+    );
+
+
     
+}
+
+
+sub _build_connstr {
+    my ($access_data) = @_;
+
+    my $connstr = "";
+    $connstr .= "postgresql://";
+    $connstr .= "$access_data->{dbuser}";
+    $connstr .= ':';
+    $connstr .= "$access_data->{dbpasswd}";
+    $connstr .= '@';
+    $connstr .= "$access_data->{dbhost}";
+    $connstr .= ":$access_data->{dbport}" if $access_data->{dbport};
+    $connstr .= '/';
+    $connstr .= ($access_data->{dbname} || $access_data->{dbdefault});
+ 
+    return $connstr;
 }
 
 1;
