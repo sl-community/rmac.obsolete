@@ -10,6 +10,8 @@
 
   <h2><%= l 'Backup' %></h2>
 
+
+  % if (@$dbinfos) {
   <form>
     %= tag 'hidden', name => 'login', value => 'root login';
   <table>
@@ -29,12 +31,49 @@
     %  }
   </table>
   </form>
+  % } else {
+  <%= l 'No Datasets available' %>.<br/>
+  % }
+
+
+  <br/>
   <hr>
 
   
   <h2><%= l 'Restore' %></h2>
 
-  <p>Coming soon...</p>
+  %= form_for dbrestore => (method => 'post') => (enctype => 'multipart/form-data') => begin
+  <table>
+    <tr>
+      <th colspan="2">
+	<input type="file" name="upload" value="foo">
+      </th>
+    </tr>
+    <tr>
+      <th colspan="2">&nbsp;</th>
+    </tr>
+    <tr>
+      <th  colspan="2"><%= l 'Name of dataset to create (must not exist yet)' %>:</th>
+    </tr>
+    <tr>
+      <td align="right"><input type="radio" name="naming_strategy" value="derive" checked="1"></td>
+      <td align="left"><%= l 'Derive from filename' %></td>
+    </tr>
+    <tr>
+      <td align="right"><input type="radio" name="naming_strategy" value="static"></td>
+      <td align="left"><%= l 'Use this name' %>:&nbsp;
+	<input type="text" name="dataset_name">
+      </td>
+    </tr>
+  </table>
+
+  
+  <br/>
+  %= tag 'button', class => 'submit', l 'Restore'
+  &nbsp;(<%= l 'can take a while' %>)
+  % end
+  
+  <br/>
   <hr>
 </center>
 
@@ -49,7 +88,7 @@
 <input type="hidden" name="login" value="root login">
 
 <%= $admin_button->('pg_database_administration', l 'Back to database administration') %>
-<%= $admin_button->('list_users', l 'Back to main page') %>
+<%= $admin_button->('list_users', l 'Main Menu') %>
 
 </form>
 

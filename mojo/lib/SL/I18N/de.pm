@@ -17,15 +17,18 @@ our %Lexicon = (
 
     # Buttons:
     'Continue'     => 'Weiter',
+    'Back'         => 'Zurück',
     'Download ZIP' => 'ZIP herunterladen',
     'Download dump' => 'Dump herunterladen',
     'Back to database administration' => 'Zurück zur Datenbankverwaltung',
-    'Back to main page' => 'Zurück zur Hauptseite',
+    'Main Menu' => 'Hauptmenü',
     
     # Errors:
     'Error' => 'Fehler',
     'Incorrect date format' => 'Falsches Datumsformat',
     'Database problem'  => 'Problem mit der Datenbank',
+    'No filename specified' => 'Kein Dateiname angegeben',
+    'Invalid filename' => 'Ungültiger Dateiname',
 
     # Testseite:
     'Testpage'              => 'Testseite',
@@ -34,16 +37,26 @@ our %Lexicon = (
     'Parameters'            => 'Parameter',
     'Configuration'         => 'Konfiguration',
     'Environment variables' => 'Umgebungsvariablen',
+    "The filename must be in the form 'NAME(-|_)YYYY-MM-DD.sql.gz'" =>
+        "Der Dateiname muß im Format 'NAME(-|_)YYYY-MM-DD.sql.gz' sein",
+    'Invalid dataset name' => 'Ungültiger Datenset-Name',
 
     # Datenbank Backup/Restore:
-    'Backup' => 'Sichern',
+    'Backup'  => 'Sichern',
     'Restore' => 'Wiederherstellen',
     'Dataset' => 'Datenset',
-    'Size'  => 'Größe',
-    'Action' => 'Aktion',
+    'Size'    => 'Größe',
+    'Action'  => 'Aktion',
 
-    
-    
+    'Name of dataset to create (must not exist yet)' =>
+        'Name des zu erstellenden Datensets (darf noch nicht existieren)',
+    'Derive from filename' => 'Vom Dateinamen ableiten',
+    'Use this name' => 'Diesen Namen verwenden',
+
+    'No Datasets available' => 'Keine Datensets vorhanden',
+    'can take a while'      => 'kann eine Weile dauern',
+    'Restore successful'    => 'Wiederherstellung erfolgreich',
+    'is now ready for use'  => 'kann jetzt genutzt werden',
 );
 
 

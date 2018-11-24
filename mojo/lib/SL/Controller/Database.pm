@@ -25,10 +25,7 @@ ORDER BY datname
     my $dbinfos = eval {
         $pg->db->query($sql)->arrays->to_array
     };
-    return if $c->exception("Database problem");
-
-    
-    #return $c->render('error', error => "Database connection could not be established", detail => $@) if $@;
+    $c->exception("Database problem", qr/connect/) && return;
     
     $c->render(
         dbinfos => $dbinfos
@@ -68,6 +65,77 @@ sub backup {
     close $cmd_handle;
     $c->finish();
 }
+
+
+
+sub restore {
+    my $c = shift;
+
+    my $upload          = $c->param('upload');
+    my $upload_filename = $upload->filename;
+
+    my $dataset_name;
+
+    if ($upload_filename eq '' ) {
+        $c->exception(
+            "No filename specified",
+        ) && return;
+    }
+    
+    if ($upload_filename =~ m/^(.*)[_-]\d{4}-\d{2}-\d{2}\.sql\.gz$/ ) {
+        $dataset_name = $1;
+    }
+    else {
+        $c->exception(
+            "Invalid filename",
+            "The filename must be in the form 'NAME(-|_)YYYY-MM-DD.sql.gz'"
+        ) && return;
+    }
+
+    if ($c->param('naming_strategy') eq 'static') {
+        $dataset_name = $c->param('dataset_name');
+    }
+
+    if ($dataset_name !~ m/^\w+$/ ) {
+        $c->exception(
+            "Invalid dataset name",
+        ) && return;
+    }
+
+    
+    my $text;
+
+
+    $text .= "Restoring $upload_filename into '$dataset_name'\n";
+
+
+    my $pg = $c->mojo_pg->{object};
+
+    # Create new database:
+    eval { $pg->db->query("CREATE DATABASE $dataset_name") };
+    $c->exception("Database problem", qr/./) && return;
+    
+
+    $c->param(dbname => $dataset_name);
+    
+    my $pg_restore_cmd = join(' ',
+                              'gzip -d |',
+                              'psql',
+                              '--dbname', $c->mojo_pg->{connstr},
+                              '>/dev/null'
+                          );
+    say STDERR $pg_restore_cmd;
+
+    eval {
+        open(my $cmd_handle, "|-", $pg_restore_cmd) || die $!;
+        print $cmd_handle $upload->slurp;
+        close $cmd_handle;
+    };
+    $c->exception("Problem", qr/./) && return;
+    
+    $c->render(dataset_name => $dataset_name);
+}
+
 
 
 1;
