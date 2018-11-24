@@ -135,13 +135,40 @@ sub register {
     
     $app->helper(
         exception => sub {
-            my ($c, $error) = @_;
+            # For use in a Mojolicious controller.
             
-            return 0 unless $@;  # No exception - no error page needed.
-            
-            $c->render('error', error => $error, detail => $@);
+            # Use case 1: 
+            # $c->exception("Bad things") && return;
+            # ==> Render error page without detail; return 1
 
-            return 1;
+            # Use case 2: 
+            # $c->exception("Bad things", "Detailed message") && return;
+            # ==> Render error page with detail button; return 1
+
+            # Use case 3: 
+            # $c->exception("Bad things", qr/RegExp/) && return;
+            # ==> Render error page only if $@ matches RegExp.
+            #     The Detail will be $@. Return 0|1
+
+            my $c = shift;
+            
+            my ($short, $param2) = @_;
+
+            
+            if (defined $param2 && ref $param2) { # RegExp
+                if ($@ =~ $param2) {
+                    $c->render('error', short => $short, long => $@);
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+            else {
+                $c->render('error', short => $short, long => $param2);
+                return 1;
+            }
+
         }
     );
 
@@ -161,7 +188,12 @@ sub _build_connstr {
     $connstr .= "$access_data->{dbhost}";
     $connstr .= ":$access_data->{dbport}" if $access_data->{dbport};
     $connstr .= '/';
-    $connstr .= ($access_data->{dbname} || $access_data->{dbdefault});
+    if ($access_data->{dbname}) {
+        $connstr .= $access_data->{dbname};
+    }
+    else {
+        $connstr .= $access_data->{dbdefault};
+    }
  
     return $connstr;
 }
