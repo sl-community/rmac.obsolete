@@ -12,7 +12,7 @@
 %= form_for backup_restore => (method => 'post') => begin
 <input type="hidden" name="login" value="root login">
 
-%= tag 'button', class => 'submit', l 'Back'
+%= tag 'button', class => 'submit', l 'Continue'
 
 % end
 

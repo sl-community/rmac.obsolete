@@ -11,13 +11,14 @@
   <h2><%= l 'Backup' %></h2>
 
 
-  % if (@$dbinfos) {
   <form>
     %= tag 'hidden', name => 'login', value => 'root login';
+    
+  % if (@$dbinfos) {
   <table>
     %= tag 'tr', class => 'listheading', begin
     %=     tag 'th', l 'Dataset'
-    %=     tag 'th', l 'Size'
+    %=     tag 'th', l('Size') . ' (live)'
     %=     tag 'th', l 'Action'
     %= end
     %  foreach my $row (@$dbinfos) {
@@ -30,10 +31,10 @@
     %= end
     %  }
   </table>
-  </form>
   % } else {
   <%= l 'No Datasets available' %>.<br/>
   % }
+  </form>
 
 
   <br/>

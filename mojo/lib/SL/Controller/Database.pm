@@ -82,13 +82,15 @@ sub restore {
         ) && return;
     }
     
-    if ($upload_filename =~ m/^(.*)[_-]\d{4}-\d{2}-\d{2}\.sql\.gz$/ ) {
+    if ($upload_filename =~ m/^(\w+?)([_-]\d{4}-\d{2}-\d{2})?\.sql\.gz$/ ) {
         $dataset_name = $1;
     }
     else {
+        my $samples = '<br>test.sql.gz<br>test-2018-11-24.sql.de<br>test_2018-11-24.sql.de';
         $c->exception(
             "Invalid filename",
-            "The filename must be in the form 'NAME(-|_)YYYY-MM-DD.sql.gz'"
+            "Examples of allowed filenames",
+            ":<br><pre>$samples</pre>"
         ) && return;
     }
 

@@ -37,9 +37,7 @@ our %Lexicon = (
     'Parameters'            => 'Parameter',
     'Configuration'         => 'Konfiguration',
     'Environment variables' => 'Umgebungsvariablen',
-    "The filename must be in the form 'NAME(-|_)YYYY-MM-DD.sql.gz'" =>
-        "Der Dateiname muß im Format 'NAME(-|_)YYYY-MM-DD.sql.gz' sein",
-    'Invalid dataset name' => 'Ungültiger Datenset-Name',
+    'Examples of allowed filenames' => 'Beispiele erlaubter Dateinamen',
 
     # Datenbank Backup/Restore:
     'Backup'  => 'Sichern',

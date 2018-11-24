@@ -152,12 +152,15 @@ sub register {
 
             my $c = shift;
             
-            my ($short, $param2) = @_;
+            my ($short, $param2, $additional) = @_;
 
             
             if (defined $param2 && ref $param2) { # RegExp
                 if ($@ =~ $param2) {
-                    $c->render('error', short => $short, long => $@);
+                    $c->render('error',
+                               short => $short,
+                               long => $@,
+                               additional => $additional);
                     return 1;
                 }
                 else {
@@ -165,7 +168,10 @@ sub register {
                 }
             }
             else {
-                $c->render('error', short => $short, long => $param2);
+                $c->render('error',
+                           short => $short,
+                           long => $param2,
+                           additional => $additional);
                 return 1;
             }
 
