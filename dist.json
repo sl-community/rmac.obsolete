@@ -9,7 +9,7 @@
     {
 	"type":    "perlmodule",
 	"name":    "Mojolicious::Plugin::I18N",
-	"version": "1.60",
+	"version": "1.6",
 	"package": { "debian9": "libmojolicious-plugin-i18n-perl" }
     },
 
