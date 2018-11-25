@@ -57,12 +57,19 @@
       <th  colspan="2"><%= l 'Name of dataset to create (must not exist yet)' %>:</th>
     </tr>
     <tr>
-      <td align="right"><input type="radio" name="naming_strategy" value="derive" checked="1"></td>
-      <td align="left"><%= l 'Derive from filename' %></td>
+      <td align="right">
+	<input type="radio" name="naming_strategy" value="derive" id="derived" checked="1">
+      </td>
+      <td align="left">
+	<label for="derived"><%= l 'Derive from filename' %></label>
+      </td>
     </tr>
     <tr>
-      <td align="right"><input type="radio" name="naming_strategy" value="static"></td>
-      <td align="left"><%= l 'Use this name' %>:&nbsp;
+      <td align="right">
+	<input type="radio" name="naming_strategy" value="static" id="static">
+      </td>
+      <td align="left">
+	<label for="static"><%= l 'Use this name' %></label>:&nbsp;
 	<input type="text" name="dataset_name">
       </td>
     </tr>
