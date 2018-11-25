@@ -295,6 +295,7 @@ sub check_requirement {
         }
         else {
             $info = "Not installed";
+            $info .= " (required version: $r->{version})" if $r->{version};
         }
 
         if (!$loadable || !$version_ok) {
