@@ -52,8 +52,13 @@ sub startup {
     $auth->get('/gobd/show/#filename') ->to('GoBD#show');
     $auth->get('/gobd/download')       ->to('GoBD#download');
 
+    # Database management:
     $auth->any('/db_mgmt/admin/backup_restore')
         ->to('Database#backup_restore')->name('backup_restore');
+    
+    $auth->any('/db_mgmt/admin/backup/:dbname')
+        ->to('Database#backup')->name('dbbackup');
+
     $auth->any('/db_mgmt/admin/restore')
         ->to('Database#restore')->name('dbrestore');
 }

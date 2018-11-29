@@ -26,7 +26,7 @@
     %=     tag 'td', $row->[0]
     %=     tag 'td', align => 'right', $row->[1]
     %=     tag td => begin
-    %=         tag 'button', class => 'submit', formaction => url_for('dbbackup') . "$row->[0]", l 'Download dump'
+    %=         tag 'button', class => 'submit', formaction => url_for('dbbackup') . "/$row->[0]", l 'Download dump'
     %=     end
     %= end
     %  }
