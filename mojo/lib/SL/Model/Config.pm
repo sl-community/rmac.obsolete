@@ -166,5 +166,21 @@ sub val {
 }
 
 
+sub pg_connstr {
+    my $self = shift;
+
+    my $connstr = "";
+    $connstr .= "postgresql://";
+    $connstr .= $self->val('dbuser');
+    $connstr .= ':';
+    $connstr .= $self->val('dbpasswd');
+    $connstr .= '@';
+    $connstr .= $self->val('dbhost');
+    $connstr .= (':' . $self->val('dbport')) if $self->val('dbport');
+    $connstr .= '/';
+    $connstr .= $self->val('dbname');
+
+    return $connstr;
+}
 
 1;

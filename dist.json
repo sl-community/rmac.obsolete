@@ -91,6 +91,13 @@
     },
 
     {
+	"type":    "perlmodule",
+	"name":    "YAML::Tiny",
+	"version": "0",
+	"package": { "debian9": "libyaml-tiny-perl" }
+    },
+
+    {
 	"type": "executable",
 	"name": "zip",
 	"package": { "debian9": "zip" }
