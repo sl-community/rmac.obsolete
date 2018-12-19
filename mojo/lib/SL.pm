@@ -61,6 +61,8 @@ sub startup {
 
     $auth->any('/db_mgmt/admin/restore')
         ->to('Database#restore')->name('dbrestore');
+
+    $auth->any('/ustva/download') ->to('UStVA#download');
 }
 
 
