@@ -6,7 +6,7 @@ use Data::Dumper;
 sub startup {
     my $self = shift;
 
-    $self->mode('production');
+    $self->mode('production') unless exists $ENV{MOJO_MODE};
 
     $self->plugin('SL::Helpers');
     $self->plugin('I18N', no_header_detect => 1);
