@@ -13,6 +13,7 @@ use File::Copy;
 use OpenOffice::OODoc;
 use YAML::Tiny;
 use Data::Dumper;
+use File::pushd;
 
 #use SL::Log;
 
@@ -79,25 +80,54 @@ sub fill_in {
 
         my $pg = Mojo::Pg->new($self->{config}->pg_connstr);
         
-        my $result = $pg->db->query($sql)->arrays->to_array;
-
-        @$result == 1 || die "Not exactly one row"; # TODO
+        my $result = $pg->db->query($sql, @{$args{bind_values}})
+            ->arrays->to_array;
 
         #say STDERR Dumper($result);
+
+        return if $args{test};
+        
+        @$result == 1 || die "Not exactly one row"; # TODO
+
         
         while (my ($index, $cell) = each @{$args{cells}}) {
+            #say STDERR "Filling: $cell <= $result->[0][$index]";
             $self->{doc}->updateCell(0, $cell, $result->[0][$index]);
-       }
+        }
 
+        return $result->[0];
     }
 }
 
 
+sub update {
+    my $self = shift;
+    my %args = @_;
+    
+    foreach my $cell (@{$args{cells}}) {
+        #say STDERR "Updating $cell...";
+        $self->{doc}->updateCell(0, $cell, $self->{doc}->getCellValue(0, $cell));
+    }
+}
 
 sub save {
     my $self = shift;
     $self->{doc}->save;
 }
+
+
+sub download_name {
+    my $self = shift;
+    my ($name) = @_;
+
+    my $dir = pushd(dirname($self->{dest}));
+
+    symlink(basename($self->{dest}), $name);
+
+    $self->{download_name} = $name;
+}
+
+
 
 
 1;

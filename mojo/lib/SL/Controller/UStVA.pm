@@ -8,6 +8,9 @@ use Mojo::File;
 use SL::Model::Config;
 use SL::Model::Calc::Document;
 
+use Time::Piece;
+use Time::Seconds;
+
 use utf8;
 #use Mojo::Util;
 
@@ -19,26 +22,48 @@ sub download {
     my $conf = SL::Model::Config->instance($c);
 
     my $workdir = $c->private_spool_realm("ustva", empty => 1);
-    
-    my $text = "<pre>";
 
-    $text .= $ENV{REQUEST_URI} . "\n";
-    $text .= $c->dumper($conf) . "\n";
 
-    $text .= "Workdir: $workdir\n";
+
     
-    $text .= "</pre>";
+    #my $text = "<pre>";
+
+    #$text .= $ENV{REQUEST_URI} . "\n";
+    #$text .= $c->dumper($conf) . "\n";
+
+    #$text .= "Workdir: $workdir\n";
+    
 
 
     
     my $doc = SL::Model::Calc::Document->new(
         config    => $conf,
         src       => "ustva-template.ods",
-        dest      => "out.ods",
+        dest      => "ustva.ods",
         workdir   => $workdir,
     );
 
+
+    # fromdate is simple: YYYY-MM-01
+    my $fromdate = join("-", $c->param("year"), $c->param("month"), "01");
+
+    # todate: Add (interval-1) months and three days (to reach the following
+    # month for sure).
+    # Then detect the last day of this month.
+
+    my $t1 = Time::Piece->strptime($fromdate, "%Y-%m-%d");
+    my $t2 = $t1 + ONE_MONTH * ($c->param("interval")-1) + ONE_DAY*3;
+
     
+    my $todate = sprintf("%d-%02d-%02d",
+                         $t2->year,
+                         $t2->mon,
+                         $t2->month_last_day);
+
+    #$text .= "<b>From: $fromdate</b>\n";
+    #$text .= "<b>To:   $todate</b>\n";
+
+
     # Headline:
     $doc->fill_in(
         cells => ["B1"],
@@ -77,7 +102,7 @@ sub download {
     }
 
     
-    $doc->fill_in(
+    my $firma_info = $doc->fill_in(
         cells    => ["B4", "B5", "B6"],
         from_sql => "ustva/firma",
     );
@@ -92,12 +117,49 @@ sub download {
         from_sql => "ustva/ust_idnr",
     );
 
+
+    $doc->fill_in(
+        cells    => ["H20"],
+        from_sql => "ustva/ust19",
+        bind_values => [$fromdate, $todate],
+    );
+
+    
     $doc->save;
 
+    # Build download filename:
+    my $firma = $firma_info->[0];
+    $firma =~ s/\s+$//;
+    $firma =~ s/\s/_/g;
 
+    my $datetag;
+
+    if ($c->param('interval') == 1) {
+        $datetag = sprintf("%d-%02d", $t1->year, $t1->mon);
+    }
+    elsif ($c->param('interval') == 3) {
+        $datetag = sprintf("%d-Q%d", $t1->year, int($t1->_mon / 3) + 1);
+    }
+    elsif ($c->param('interval') == 12) {
+        $datetag = sprintf("%d", $t1->year);
+    }
     
-    
-    $c->render(text => $text);
+    $doc->download_name("${firma}_Umsatzsteuer-Voranmeldung_$datetag.ods");
+
+
+    #$text .= "Name: $doc->{download_name}\n";
+    #$text .= "</pre>";
+
+
+    my $static = Mojolicious::Static->new( paths => [ $workdir ] );
+
+    $c->res->headers->content_type("application/octet-stream");
+    $c->res->headers->content_disposition(
+        "attachment; filename=$doc->{download_name}"
+    );
+
+    $static->serve($c, $doc->{download_name});
+
 }
 
 

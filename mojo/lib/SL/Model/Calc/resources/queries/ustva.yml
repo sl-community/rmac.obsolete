@@ -43,3 +43,21 @@ ust_idnr: |
   FROM chart INNER JOIN tax
   ON chart.id = tax.chart_id
   WHERE accno = '3823'
+
+
+ust19: |
+        -- 1. AR Invoices
+        SELECT
+          sum(it.amount)
+        FROM invoicetax it
+        JOIN chart c ON (c.id = it.chart_id)
+        JOIN ar aa ON (aa.id = it.trans_id)
+        JOIN customer vc ON (vc.id = aa.customer_id)
+        WHERE
+        c.accno = '3806'
+        AND
+        aa.transdate >= ?
+        AND
+        aa.transdate <= ?
+
+  
