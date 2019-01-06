@@ -26,8 +26,20 @@ sub new {
     # Detect application home:
     my $pr = Mojo::Home->new->detect->to_string;
 
-    # Ensure that this voodoo gave us the correct path:
-    -e "$pr/mojo.pl" || die "Invalid project root: $pr";
+    # Do we really have the project root? If not, try another method:
+    if (! -e "$pr/mojo.pl") {
+        my @path = File::Spec->splitdir( __FILE__ );
+        splice @path, -5;
+
+        $pr = File::Spec->catfile(@path);
+
+        if (! -e "$pr/mojo.pl") {
+            die "Cannot detect project root\n";
+        }
+    }
+
+
+    
     
     $_self->{globalconfig}{x_project_root} = $pr;
 

@@ -104,19 +104,33 @@ sub download {
     
     my $firma_info = $doc->fill_in(
         cells    => ["B4", "B5", "B6"],
-        from_sql => "ustva/firma",
+        from_sql => "company/name_address",
     );
 
     $doc->fill_in(
         cells    => ["B9"],
-        from_sql => "ustva/steuernummer",
+        from_sql => "company/businessnumber",
     );
 
     $doc->fill_in(
         cells    => ["D9"],
-        from_sql => "ustva/ust_idnr",
+        from_sql => "company/ust_idnr",
     );
 
+
+    # Create inline tax view:
+    SL::Model::SQL::Statement->new(
+        config => $conf,
+        query  => "ustva/drop_view_inline_tax",
+    )->execute;
+    SL::Model::SQL::Statement->new(
+        config => $conf,
+        query  => "ustva/create_view_inline_tax",
+    )->execute;
+
+
+
+=for wip
 
     $doc->fill_in(
         cells    => ["H20"],
@@ -124,6 +138,7 @@ sub download {
         bind_values => [$fromdate, $todate],
     );
 
+=cut
     
     $doc->save;
 

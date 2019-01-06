@@ -11,11 +11,11 @@ use File::Spec;
 use File::Basename;
 use File::Copy;
 use OpenOffice::OODoc;
-use YAML::Tiny;
 use Data::Dumper;
 use File::pushd;
 
-#use SL::Log;
+use SL::Model::Config;
+use SL::Model::SQL::Statement;
 
 
 
@@ -37,7 +37,7 @@ sub new {
     ));
     $self->{resource_path} = $resource_path;
     
-    my $src  = File::Spec->catfile($resource_path, 'docs', $self->{src});
+    my $src  = File::Spec->catfile($resource_path, $self->{src});
 
     my $dest = File::Spec->catfile($args{workdir}, $self->{dest});
     copy($src, $dest) || die $!;
@@ -67,22 +67,14 @@ sub fill_in {
     }
     elsif (exists $args{from_sql}) {
 
-        my ($filename, $key) = split(m|/|, $args{from_sql});
-        
-        my $yml_file = File::Spec->catfile(
-            $self->{resource_path},
-            'queries',
-            "$filename.yml"
+        my $sth = SL::Model::SQL::Statement->new(
+            config => $self->{config},
+            query  => $args{from_sql}
         );
-
-        my $yaml = YAML::Tiny->read($yml_file);
-        my $sql = $yaml->[0]{$key};
-
-        my $pg = Mojo::Pg->new($self->{config}->pg_connstr);
         
-        my $result = $pg->db->query($sql, @{$args{bind_values}})
-            ->arrays->to_array;
-
+        $sth->execute(@{$args{bind_values}});
+        my $result = $sth->fetch;
+        
         #say STDERR Dumper($result);
 
         return if $args{test};
