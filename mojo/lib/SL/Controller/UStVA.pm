@@ -1,6 +1,7 @@
 package SL::Controller::UStVA;
 use strict;
 use warnings;
+use utf8;
 use Mojo::Base 'Mojolicious::Controller';
 use Mojolicious::Static;
 use Mojo::File;
@@ -10,9 +11,7 @@ use SL::Model::Calc::Document;
 
 use Time::Piece;
 use Time::Seconds;
-
-use utf8;
-#use Mojo::Util;
+use Data::Dumper;
 
 
 
@@ -25,17 +24,6 @@ sub download {
 
 
 
-    
-    #my $text = "<pre>";
-
-    #$text .= $ENV{REQUEST_URI} . "\n";
-    #$text .= $c->dumper($conf) . "\n";
-
-    #$text .= "Workdir: $workdir\n";
-    
-
-
-    
     my $doc = SL::Model::Calc::Document->new(
         config    => $conf,
         src       => "ustva-template.ods",
@@ -59,9 +47,6 @@ sub download {
                          $t2->year,
                          $t2->mon,
                          $t2->month_last_day);
-
-    #$text .= "<b>From: $fromdate</b>\n";
-    #$text .= "<b>To:   $todate</b>\n";
 
 
     # Headline:
@@ -101,6 +86,19 @@ sub download {
         );   
     }
 
+
+    # Method: NULL = Accrual, "cash" = Cash
+    my $method = SL::Model::SQL::Statement->new(
+        config => $conf,
+        query  => "company/method",
+    )->execute->fetch->[0][0];
+
+    $doc->fill_in(
+        cells => [defined $method? "E6" : "E7"],
+        text  => ["X"],
+    );   
+    
+    
     
     my $firma_info = $doc->fill_in(
         cells    => ["B4", "B5", "B6"],
@@ -130,15 +128,36 @@ sub download {
 
 
 
-=for wip
-
     $doc->fill_in(
-        cells    => ["H20"],
-        from_sql => "ustva/ust19",
+        cells    => ["H17"],
+        from_sql => "ustva/41",
         bind_values => [$fromdate, $todate],
     );
 
-=cut
+    $doc->fill_in(
+        cells    => ["H18"],
+        from_sql => "ustva/43",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["H20"],
+        from_sql => "ustva/81",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["H24"],
+        from_sql => "ustva/21",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["H22"],
+        from_sql => "ustva/89",
+        bind_values => [$fromdate, $todate],
+    );
+
     
     $doc->save;
 
@@ -160,10 +179,6 @@ sub download {
     }
     
     $doc->download_name("${firma}_Umsatzsteuer-Voranmeldung_$datetag.ods");
-
-
-    #$text .= "Name: $doc->{download_name}\n";
-    #$text .= "</pre>";
 
 
     my $static = Mojolicious::Static->new( paths => [ $workdir ] );

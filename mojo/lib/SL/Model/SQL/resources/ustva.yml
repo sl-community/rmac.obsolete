@@ -203,7 +203,7 @@ create_view_inline_tax: |
 
 
 81: |
-  SELECT sum(amount) FROM v_inline_tax
+  SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
@@ -211,4 +211,48 @@ create_view_inline_tax: |
   AND
   account LIKE '3806%'
   
+41: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AR'
+  AND
+  account LIKE '3823%'
   
+43: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AR'
+  AND
+  account LIKE '3825%'
+  
+21: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AR'
+  AND
+  account LIKE '3824%'
+
+89: |
+  SELECT -trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '1404%'
+
+test: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '3837%'
+

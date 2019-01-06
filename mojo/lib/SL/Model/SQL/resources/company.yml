@@ -43,3 +43,9 @@ ust_idnr: |
   FROM chart INNER JOIN tax
   ON chart.id = tax.chart_id
   WHERE accno = '3823'
+
+method: |
+  SELECT fldvalue FROM defaults WHERE fldname = 'method'
+  UNION ALL
+  SELECT NULL
+  LIMIT 1
