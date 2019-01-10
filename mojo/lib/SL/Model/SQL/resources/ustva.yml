@@ -4,6 +4,7 @@ drop_view_inline_tax: |
   DROP VIEW IF EXISTS v_inline_tax
   
 
+# Out of bin/mozilla/reports.pl:
 create_view_inline_tax: |
         CREATE OR REPLACE VIEW  v_inline_tax
         AS
@@ -202,15 +203,6 @@ create_view_inline_tax: |
 
 
 
-81: |
-  SELECT trunc(sum(amount)) FROM v_inline_tax
-  WHERE
-  transdate BETWEEN $1 AND $2
-  AND
-  module = 'AR'
-  AND
-  account LIKE '3806%'
-  
 41: |
   SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
@@ -229,6 +221,24 @@ create_view_inline_tax: |
   AND
   account LIKE '3825%'
   
+81: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AR'
+  AND
+  account LIKE '3806%'
+  
+89: |
+  SELECT round(round(sum(tax)::NUMERIC, 2) / 19 * 100, 2) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '3804%'
+
 21: |
   SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
@@ -238,21 +248,79 @@ create_view_inline_tax: |
   AND
   account LIKE '3824%'
 
-89: |
-  SELECT -trunc(sum(amount)) FROM v_inline_tax
+45: |
+  SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
-  module = 'AP'
+  module = 'AR'
   AND
-  account LIKE '1404%'
+  account LIKE '3826%'
 
-test: |
-  SELECT trunc(sum(amount)) FROM v_inline_tax
+46: |
+  SELECT round(round(sum(tax)::NUMERIC, 2) / 19 * 100, 2) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
   module = 'AP'
   AND
   account LIKE '3837%'
+
+52: |
+  SELECT round(round(sum(tax)::NUMERIC, 2) / 19 * 100, 2) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '3838%'
+
+66: |
+  SELECT round(sum(value)::NUMERIC, 2) from (
+    SELECT sum(tax) as value FROM v_inline_tax
+    WHERE
+    transdate BETWEEN $1 AND $2
+    AND
+    module = 'AP'
+    AND
+    account LIKE '1401%'
+      UNION ALL
+    SELECT sum(tax) FROM v_inline_tax
+    WHERE
+    transdate BETWEEN $1 AND $2
+    AND
+    module = 'AP'
+    AND
+    account LIKE '1406%'
+  ) dummy
+
+61: |
+  SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '1404%'
+ 
+62: |
+  SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '1433%'
+ 
+67: |
+  SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AP'
+  AND
+  account LIKE '1407%'
+ 
+test: |
+  SELECT 3+4
 

@@ -153,11 +153,52 @@ sub download {
     );
 
     $doc->fill_in(
+        cells    => ["H27"],
+        from_sql => "ustva/45",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
         cells    => ["H22"],
         from_sql => "ustva/89",
         bind_values => [$fromdate, $todate],
     );
 
+    $doc->fill_in(
+        cells    => ["H31"],
+        from_sql => "ustva/46",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["H34"],
+        from_sql => "ustva/52",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["J43"],
+        from_sql => "ustva/66",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["J44"],
+        from_sql => "ustva/61",
+        bind_values => [$fromdate, $todate],
+    );
+    
+    $doc->fill_in(
+        cells    => ["J45"],
+        from_sql => "ustva/62",
+        bind_values => [$fromdate, $todate],
+    );
+    
+    $doc->fill_in(
+        cells    => ["J47"],
+        from_sql => "ustva/67",
+        bind_values => [$fromdate, $todate],
+    );
     
     $doc->save;
 
