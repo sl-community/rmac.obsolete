@@ -117,10 +117,10 @@ sub download {
 
 
     # Create inline tax view:
-    SL::Model::SQL::Statement->new(
-        config => $conf,
-        query  => "ustva/drop_view_inline_tax",
-    )->execute;
+    # SL::Model::SQL::Statement->new(
+    #     config => $conf,
+    #     query  => "ustva/drop_view_inline_tax",
+    # )->execute;
     SL::Model::SQL::Statement->new(
         config => $conf,
         query  => "ustva/create_view_inline_tax",
@@ -147,6 +147,18 @@ sub download {
     );
 
     $doc->fill_in(
+        cells    => ["H21"],
+        from_sql => "ustva/86",
+        #bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
+        cells    => ["H22"],
+        from_sql => "ustva/89",
+        bind_values => [$fromdate, $todate],
+    );
+
+    $doc->fill_in(
         cells    => ["H24"],
         from_sql => "ustva/21",
         bind_values => [$fromdate, $todate],
@@ -158,12 +170,7 @@ sub download {
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
-        cells    => ["H22"],
-        from_sql => "ustva/89",
-        bind_values => [$fromdate, $todate],
-    );
-
+    
     $doc->fill_in(
         cells    => ["H31"],
         from_sql => "ustva/46",
