@@ -206,7 +206,15 @@ sub download {
         from_sql => "ustva/67",
         bind_values => [$fromdate, $todate],
     );
-    
+
+    $doc->fill_in(
+        cells    => ["B65", "C65", "F65", "I65"],
+        types    => ["string", "string", "float", "float" ],
+        from_sql => "ustva/page2",
+        multirow => 1,
+        bind_values => [$fromdate, $todate],
+    );
+
     $doc->save;
 
     # Build download filename:
@@ -238,6 +246,7 @@ sub download {
 
     $static->serve($c, $doc->{download_name});
 
+    $c->rendered();
 }
 
 

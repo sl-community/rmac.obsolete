@@ -13,6 +13,7 @@ use File::Copy;
 use OpenOffice::OODoc;
 use Data::Dumper;
 use File::pushd;
+use Scalar::Util qw(looks_like_number);
 
 use SL::Model::Config;
 use SL::Model::SQL::Statement;
@@ -45,7 +46,7 @@ sub new {
     $self->{dest} = $dest;
 
     $self->{doc} = odfDocument(file => $dest);
-    $self->{doc}->normalizeSheet('Sheet1', 'full');
+    $self->{doc}->normalizeSheet(0, 'full');
 
 
     bless $self, $class;
@@ -57,7 +58,8 @@ sub new {
 sub fill_in {
     my $self = shift;
     my %args = @_;
-    
+
+    $args{multirow} //= 0;
 
     if (exists $args{text}) {
 
@@ -79,12 +81,42 @@ sub fill_in {
 
         return if $args{test};
         
-        @$result == 1 || die "Not exactly one row"; # TODO
+        if (!$args{multirow} && @$result != 1) {
+            die "Not exactly one row";
+        }
 
-        
-        while (my ($index, $cell) = each @{$args{cells}}) {
-            #say STDERR "Filling: $cell <= $result->[0][$index]";
-            $self->{doc}->updateCell(0, $cell, $result->[0][$index]);
+        if (!$args{multirow}) {
+            while (my ($index, $cell) = each @{$args{cells}}) {
+                #say STDERR "Filling: $cell <= $result->[0][$index]";
+                $self->{doc}->updateCell(0, $cell, $result->[0][$index]);
+            }
+        }
+        else {
+            my ($current_row) = $args{cells}[0] =~ m/(\d+)/;
+            my @current_cells = @{$args{cells}};
+           
+            say STDERR "Starting at $current_row";
+
+            foreach my $result_row (@$result) {
+                map { s/\d+/$current_row/  } @current_cells;
+
+                say STDERR "--- @current_cells ---";
+
+                while (my ($index, $cell) = each @current_cells) {
+                    my $value = $result_row->[$index];
+
+                    if (exists $args{types}) {
+                        say STDERR "Setting $cell to $args{types}[$index]";
+                        my $cellobj = $self->{doc}->getTableCell(0, $cell);
+                        $self->{doc}->cellValueType($cellobj,
+                                                    $args{types}[$index]);
+                    }
+                    $self->{doc}->updateCell(0, $cell, $value);
+                }
+                $current_row++;
+            }
+
+            
         }
 
         return $result->[0];

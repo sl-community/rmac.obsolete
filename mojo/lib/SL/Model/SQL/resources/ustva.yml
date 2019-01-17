@@ -326,11 +326,11 @@ create_view_inline_tax: |
   account LIKE '1407%'
 
 
-  # Zeile 65ff.: B, C, F, I
+# Rows 65: B, C, F, I
 page2: |
   SELECT
   -- account,
-  'XX', 'SOME_UST_IDNR', trunc(amount),
+  'XX', 'EINE_UST_IDNR', trunc(amount),
   CASE
     WHEN account LIKE '3823%' THEN 2
     WHEN account LIKE '3824%' THEN 3
