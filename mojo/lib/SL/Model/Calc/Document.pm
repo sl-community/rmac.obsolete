@@ -95,18 +95,18 @@ sub fill_in {
             my ($current_row) = $args{cells}[0] =~ m/(\d+)/;
             my @current_cells = @{$args{cells}};
            
-            say STDERR "Starting at $current_row";
+            #say STDERR "Starting at $current_row";
 
             foreach my $result_row (@$result) {
                 map { s/\d+/$current_row/  } @current_cells;
 
-                say STDERR "--- @current_cells ---";
+                #say STDERR "--- @current_cells ---";
 
                 while (my ($index, $cell) = each @current_cells) {
                     my $value = $result_row->[$index];
 
                     if (exists $args{types}) {
-                        say STDERR "Setting $cell to $args{types}[$index]";
+                        #say STDERR "Setting $cell to $args{types}[$index]";
                         my $cellobj = $self->{doc}->getTableCell(0, $cell);
                         $self->{doc}->cellValueType($cellobj,
                                                     $args{types}[$index]);
