@@ -204,7 +204,7 @@ create_view_inline_tax: |
 
 
 41: |
-  SELECT trunc(sum(amount)) FROM v_inline_tax
+  SELECT sum(amount) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
@@ -231,7 +231,13 @@ create_view_inline_tax: |
   account LIKE '3806%'
   
 86: |
-  SELECT 999999 ;
+  SELECT trunc(sum(amount)) FROM v_inline_tax
+  WHERE
+  transdate BETWEEN $1 AND $2
+  AND
+  module = 'AR'
+  AND
+  account LIKE '3801%'
   
 89: |
   SELECT round(round(sum(tax)::NUMERIC, 2) / 19 * 100, 2) FROM v_inline_tax
@@ -243,7 +249,7 @@ create_view_inline_tax: |
   account LIKE '3804%'
 
 21: |
-  SELECT trunc(sum(amount)) FROM v_inline_tax
+  SELECT sum(amount) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
@@ -329,18 +335,39 @@ create_view_inline_tax: |
 # Rows 65: B, C, F, I
 page2: |
   SELECT
-  -- account,
-  'XX', 'EINE_UST_IDNR', trunc(amount),
+  CASE coalesce(taxnumber,'')
+  WHEN '' THEN '*_FEHLT_IN_DATENBANK_*'
+  ELSE taxnumber
+  END as tn,
+  amount,
   CASE
     WHEN account LIKE '3823%' THEN 2
     WHEN account LIKE '3824%' THEN 3
-  END AS type_123
+  END AS type_123,
+  transdate
   FROM
-    v_inline_tax
+    v_inline_tax INNER JOIN customer on v_inline_tax.vc_id = customer.id
   WHERE
   transdate BETWEEN $1 AND $2
   AND
   module = 'AR'
   AND
   (account LIKE '3823%' or account LIKE '3824%')
-  ORDER BY account, transdate
+  ORDER BY type_123, tn, transdate
+
+
+finanzamt: |
+  SELECT
+    name,
+    address1,
+    zipcode || ' ' || city,
+    iban,
+    bic
+  FROM
+    vendor INNER JOIN address ON vendor.id = address.trans_id
+  WHERE vendornumber = $1  -- Should be 'Finanzamt'
+  UNION ALL
+  SELECT
+    '*_KEIN_KREDITOR_MIT_KENNUNG_' || $1 || '_VORHANDEN_*'
+    , NULL, NULL, NULL, NULL
+  LIMIT 1

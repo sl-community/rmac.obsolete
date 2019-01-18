@@ -117,10 +117,6 @@ sub download {
 
 
     # Create inline tax view:
-    # SL::Model::SQL::Statement->new(
-    #     config => $conf,
-    #     query  => "ustva/drop_view_inline_tax",
-    # )->execute;
     SL::Model::SQL::Statement->new(
         config => $conf,
         query  => "ustva/create_view_inline_tax",
@@ -149,7 +145,7 @@ sub download {
     $doc->fill_in(
         cells    => ["H21"],
         from_sql => "ustva/86",
-        #bind_values => [$fromdate, $todate],
+        bind_values => [$fromdate, $todate],
     );
 
     $doc->fill_in(
@@ -208,15 +204,22 @@ sub download {
     );
 
     $doc->fill_in(
-        cells    => ["B65", "C65", "F65", "I65"],
-        types    => ["string", "string", "float", "float" ],
+        cells    => ["C65", "F65", "I65"],
+        types    => ["string", "float", "float" ],
         from_sql => "ustva/page2",
         multirow => 1,
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->save;
+    $doc->fill_in(
+        cells    => ["C112", "C113", "C114", "C118", "C120"],
+        from_sql => "ustva/finanzamt",
+        bind_values => ['Finanzamt']
+    );
+    
+    $doc->save; # Everything has been filled in.
 
+    
     # Build download filename:
     my $firma = $firma_info->[0];
     $firma =~ s/\s+$//;
