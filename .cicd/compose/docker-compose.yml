@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  web:
+    image: local/rmac/web
+    build:
+      context: ../..
+      dockerfile: .cicd/compose/build/web/Dockerfile
+    networks:
+      - traefik
+      - private
+    labels:
+      traefik.docker.network: traefik
+      traefik.frontend.rule: "Host:ledger.colonia50.lan;PathPrefixStrip:${TRAEFIK_PATH_PREFIX}"
+      traefik.port: 80
+      traefik.frontend.redirect.entryPoint: https
+    volumes:
+      - /home/rmadedata/Backup/DBs/Kunden:/backup:ro
+      - /etc/portal/config.yml:/config.yml:ro
+    depends_on:
+      - db
+    
+
+  db:
+    image: local/rmac/db
+    build:
+      context: build/db
+    environment:
+      - POSTGRES_PASSWORD=secret
+    networks:
+      - private
+    volumes:
+      - data:/var/lib/postgresql/data
+
+networks:
+  traefik:
+    external: true
+  private:
+
+volumes:
+  data:
