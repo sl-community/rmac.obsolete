@@ -55,12 +55,30 @@ EOF
 close $members;
 
 
+# Eventually wait for db to come up:
+my $tries = 0;
+my $db_ready = 0;
+while ($tries <= 10) {
+    
+    if (system("pg_isready -h db") == 0) {
+        $db_ready = 1;
+        last;
+    }
+
+    say STDERR "db is not yet ready. Waiting...";
+    sleep 5;
+    $tries++;
+}
+
+die "Database not reachable\n" unless $db_ready;
+
+
 # Create db user:
 system "createuser -h db -e -U postgres --superuser sql-ledger";
 
 
 # Create and load databases:
-foreach my $dumpfile (glob "@{$instance->{databases}{dumps}}") {
+foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
     if (-r $dumpfile) {
         say STDERR "$dumpfile is readable";
     }
@@ -209,3 +227,34 @@ warehouse_id=
 
     return $result;
 }
+
+
+
+
+
+#########################################################################
+use Time::Piece;
+sub expand_list_of_dumps {
+    my @result = ();
+    
+    foreach my $entry (@_) {
+        $entry =~ s/\{\{(.*)?\}\}/_evaluate($1)/ge;
+        push @result, glob($entry);
+    }
+    return @result;
+}
+
+sub _evaluate {
+    my $expr = shift;
+
+    die "Invalid expression: $expr\n" unless $expr =~ m|current_date\(|;
+    
+    return eval $expr;
+}
+
+sub current_date {
+    my $format = shift;
+
+    return Time::Piece->new->localtime->strftime($format); 
+}
+#########################################################################
