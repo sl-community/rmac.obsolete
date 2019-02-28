@@ -7,6 +7,7 @@ use File::Path qw(make_path remove_tree);
 use YAML::Tiny;
 use Data::Dumper;
 use File::Basename;
+use Time::Piece;
 
 
 my $instance_name = $ARGV[0] // die "No instance name given\n";
@@ -162,8 +163,17 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
-#say Dumper $instance;
+my $infofile = "/tmp/ledgersetup/runinfo";
+make_path(dirname($infofile)) || die $!;
 
+say STDERR "Writing run information to $infofile";
+
+open(my $runinfo, ">", $infofile) || die $!;
+say $runinfo Time::Piece->new->strftime;
+close $runinfo;
+
+
+#########################################################################
 
 
 sub get_members_entry {
@@ -229,10 +239,6 @@ warehouse_id=
 
 
 
-
-
-#########################################################################
-use Time::Piece;
 sub expand_list_of_dumps {
     my @result = ();
     
@@ -246,14 +252,13 @@ sub expand_list_of_dumps {
 sub _evaluate {
     my $expr = shift;
 
-    die "Invalid expression: $expr\n" unless $expr =~ m|current_date\(|;
+    die "Invalid expression: $expr\n" unless $expr =~ m|build_time\(|;
     
     return eval $expr;
 }
 
-sub current_date {
+sub build_time {
     my $format = shift;
 
     return Time::Piece->new->localtime->strftime($format); 
 }
-#########################################################################
