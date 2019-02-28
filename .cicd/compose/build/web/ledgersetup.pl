@@ -163,7 +163,8 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
-my $infofile = "/tmp/ledgersetup_runinfo";#
+my $infofile = "/tmp/ledgersetup/runinfo";
+make_path(dirname($infofile)) || die $!;
 
 say STDERR "Writing run information to $infofile";
 
