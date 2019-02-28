@@ -93,7 +93,8 @@ foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
 
     my $db_exists = system("psql -h db -U postgres -d $dbname -c '' >/dev/null 2>&1") == 0;
 
-    say STDERR "Database $dbname does " . ($db_exists?  "" : "not") . " exist";
+    say STDERR "Database $dbname " .
+        ($db_exists?  "exists" : "does not exist");
 
 
     if ($db_exists && $instance->{databases}{force_recreate}) {
@@ -109,8 +110,6 @@ foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
         #system "createdb -h db -e -U postgres $dbname"; 
         system "acat $dumpfile | psql -o /dev/null -h db -U postgres -q";
     }
-
-    
 }
 
 
