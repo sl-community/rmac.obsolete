@@ -55,6 +55,24 @@ EOF
 close $members;
 
 
+# Eventually wait for db to come up:
+my $tries = 0;
+my $db_ready = 0;
+while ($tries <= 10) {
+    
+    if (system("pg_isready -h db") == 0) {
+        $db_ready = 1;
+        last;
+    }
+
+    say STDERR "db is not yet ready. Waiting...";
+    sleep 5;
+    $tries++;
+}
+
+die "Database not reachable\n" unless $db_ready;
+
+
 # Create db user:
 system "createuser -h db -e -U postgres --superuser sql-ledger";
 
