@@ -168,7 +168,7 @@ my $infofile = "/tmp/ledgersetup_runinfo";#
 say STDERR "Writing run information to $infofile";
 
 open(my $runinfo, ">", $infofile) || die $!;
-say $runinfo Time::Piece->new->localtime;
+say $runinfo Time::Piece->new->strftime;
 close $runinfo;
 
 
