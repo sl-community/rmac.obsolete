@@ -43,7 +43,7 @@ COPY ${RESOURCE_DIR}/apache_sql-ledger.conf \
 RUN mkdir -p /srv/www/sql-ledger
 
 
-COPY * /srv/www/sql-ledger/
+COPY . /srv/www/sql-ledger
 RUN chown -R www-data:www-data /srv/www/sql-ledger
 
 RUN a2ensite sql-ledger
