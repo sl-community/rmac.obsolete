@@ -4,7 +4,7 @@ node {
 
   def app_path    = ledger_kind + '/' + env.BRANCH_NAME
   
-  def compose_cmd = 'docker-compose -H docker-host:2375 -p ' + app_path
+  def compose_cmd = 'docker-compose -p ' + app_path
 
   properties([[$class: 'BuildDiscarderProperty',
              strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
@@ -15,18 +15,18 @@ node {
       checkout scm
     }
     
+    withEnv(["TRAEFIK_PATH_PREFIX=" + app_path]) {
     stage ('Compose') {
       dir('.cicd/compose') {
-        withEnv(["TRAEFIK_PATH_PREFIX=" + app_path]) {
 	  sh compose_cmd + ' up -d --force-recreate --build'
 	}
-      }
     }
 
     stage ('Initialize') {
       dir('.cicd/compose') {
         sh compose_cmd + ' exec -T -u www-data web ledgersetup.pl ' + app_path
       }
+    }
     }
   }
 }
