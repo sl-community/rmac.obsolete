@@ -40,7 +40,7 @@ COPY ${RESOURCE_DIR}/apache_sql-ledger.conf \
      /etc/apache2/sites-available/sql-ledger.conf
 
 
-RUN mkdir -p /srv/www/sql-ledger
+RUN install -d -o www-data -g www-data /srv/www/sql-ledger
 
 
 COPY --chown=www-data:www-data . /srv/www/sql-ledger
