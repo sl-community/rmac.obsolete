@@ -1,4 +1,4 @@
-.cicd
+.dockerignore
 .git
 .gitignore
 .includepath
