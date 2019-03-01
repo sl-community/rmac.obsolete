@@ -16,6 +16,7 @@ node {
     }
     
     withEnv(["TRAEFIK_PATH_PREFIX=" + app_path]) {
+    
     stage ('Compose') {
       dir('.cicd/compose') {
 	  sh compose_cmd + ' up -d --force-recreate --build'
@@ -27,6 +28,7 @@ node {
         sh compose_cmd + ' exec -T -u www-data web ledgersetup.pl ' + app_path
       }
     }
+    
     }
   }
 }
