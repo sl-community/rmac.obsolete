@@ -1,0 +1,9 @@
+.cicd
+.git
+.gitignore
+.includepath
+.project
+.settings
+users
+spool
+README.md
