@@ -12,12 +12,12 @@ services:
     labels:
       traefik.enable: true
       traefik.docker.network: traefik
-      traefik.frontend.rule: "Host:ledger.colonia50.lan;PathPrefixStrip:${TRAEFIK_PATH_PREFIX}"
+      traefik.frontend.rule: "Host:${LEDGER_HOST};PathPrefixStrip:${LEDGER_PATH_PREFIX}"
       traefik.port: 80
       traefik.frontend.redirect.entryPoint: https
     volumes:
-      - /home/rmadedata/Backup/DBs/Kunden:/backup:ro
-      - /etc/portal/config.yml:/config.yml:ro
+      - ${LEDGER_DUMP_DIRECTORY}:/dumps:ro
+      - ${LEDGER_SETUP_CONFIG}:/ledgersetup.yml:ro
     depends_on:
       - db
     

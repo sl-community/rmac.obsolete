@@ -9,6 +9,8 @@ use Data::Dumper;
 use File::Basename;
 use Time::Piece;
 
+# We will be called with e.g. "/sl-community/rmac/develop"
+
 
 my $instance_name = $ARGV[0] // die "No instance name given\n";
 
@@ -16,20 +18,11 @@ my %opts;
 
 GetOptions(
     \%opts,
-    "dry-run",
-    "initialize",
-#    "rootpw=s",
-#    "user=s",
-#    "pass=s",
-#    "lang=s",
-#    "dataset=s",
     "debug",
 ) || exit 1;
 
 
-my $instances = YAML::Tiny->read( '/config.yml' )->[0]{instances};
-
-##say Dumper $instances;
+my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
 
 say STDERR "Initializing $instance_name...";
