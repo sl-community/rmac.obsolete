@@ -12,7 +12,7 @@ use Time::Piece;
 # We will be called with e.g. "/sl-community/rmac/develop"
 
 
-my $instance_name = $ARGV[0] // die "No instance name given\n";
+my $instance_identifier = $ARGV[0] // die "No instance name or id given\n";
 
 my %opts;
 
@@ -25,11 +25,14 @@ GetOptions(
 my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
 
-say STDERR "Initializing $instance_name...";
 
-my ($instance) = grep { $_->{name} eq $instance_name } @$instances;
+my ($instance) = grep { $_->{name} eq $instance_identifier || exists $_->{id} && $_->{id} eq $instance_identifier} @$instances;
 
-defined $instance || die "Instance $instance_name not found in config\n";
+defined $instance || die "Instance with identifier $instance_identifier not found in config\n";
+
+
+say STDERR "Initializing $instance_identifier...";
+
 
 # Set admin/root password
 defined $instance->{rootpw} || die "Instance has no root password\n";
