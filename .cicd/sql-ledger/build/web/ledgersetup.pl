@@ -241,6 +241,8 @@ warehouse_id=
 
 sub expand_list_of_dumps {
     my @result = ();
+
+    say STDERR "To expand: @_";
     
     foreach my $entry (@_) {
         $entry =~ s/\{\{(.*)?\}\}/_evaluate($1)/ge;
