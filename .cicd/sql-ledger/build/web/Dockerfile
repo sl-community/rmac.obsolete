@@ -1,7 +1,7 @@
 FROM debian:9
 # (We could not use 9-slim because of problems installing  postgresql-client)
 
-ARG RESOURCE_DIR=.cicd/compose/build/web
+ARG RESOURCE_DIR=.cicd/sql-ledger/build/web
 
 RUN apt-get update  && \  
     apt-get install -y \
