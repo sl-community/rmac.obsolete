@@ -245,7 +245,9 @@ sub expand_list_of_dumps {
     say STDERR "To expand: @_";
     
     foreach my $entry (@_) {
+        say STDERR "Parsing entry: $entry";
         $entry =~ s/\{\{(.*)?\}\}/_evaluate($1)/ge;
+        say STDERR "Entry before globbing: $entry";
         push @result, glob($entry);
     }
 
