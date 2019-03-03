@@ -26,10 +26,6 @@ This is only relevant if you use Traefik as an reverse proxy.
 `LEDGER_SETUP_CONFIG`: Path to the ledgersetup config file on your host
 
 
-## Docker
+## Docker-related stuff
 
 See [sql-ledger/README.md](sql-ledger/README.md)
-
-
-
-
