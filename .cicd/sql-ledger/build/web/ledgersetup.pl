@@ -28,7 +28,8 @@ my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
 my ($instance) = grep { $_->{name} eq $instance_identifier || exists $_->{id} && $_->{id} eq $instance_identifier} @$instances;
 
-defined $instance || die "Instance with identifier $instance_identifier not found in config\n";
+defined $instance
+    || die "Instance with identifier '$instance_identifier' not found in config\n";
 
 
 say STDERR "Initializing $instance_identifier...";
