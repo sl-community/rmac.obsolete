@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use feature qw(say);
-use Getopt::Long;
 use File::Path qw(make_path remove_tree);
 use YAML::Tiny;
 use Data::Dumper;
@@ -14,16 +13,15 @@ use Time::Piece;
 
 my $instance_identifier = $ARGV[0] // die "No instance name or id given\n";
 
-my %opts;
-
-GetOptions(
-    \%opts,
-    "debug",
-) || exit 1;
-
 
 my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
+
+
+my %info = (
+    timestamp => Time::Piece->new->strftime,
+    status    => 'Unknown',
+);
 
 
 my ($instance) = grep {
@@ -79,6 +77,8 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 
 
 # Create and load databases:
+$instance->{databases}{names} = [];
+
 foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
     if (-r $dumpfile) {
         say STDERR "$dumpfile is readable";
@@ -168,8 +168,9 @@ make_path(dirname($infofile));
 
 say STDERR "Writing run information to $infofile";
 
+
 open(my $runinfo, ">", $infofile) || die $!;
-say $runinfo Time::Piece->new->strftime;
+print $runinfo Dumper(\%info);
 close $runinfo;
 
 
@@ -242,7 +243,7 @@ warehouse_id=
 sub expand_list_of_dumps {
     my @result = ();
 
-    say STDERR "To expand: @_";
+    say STDERR "expand_list_of_dumps: @_";
     
     foreach my $entry (@_) {
         say STDERR "Parsing entry: $entry";
@@ -252,9 +253,13 @@ sub expand_list_of_dumps {
     }
 
     say STDERR "Expanded list of dumps: @result";
+
+    $info{status} = "No database dump available";
     
     return @result;
 }
+
+
 
 sub _evaluate {
     my $expr = shift;
