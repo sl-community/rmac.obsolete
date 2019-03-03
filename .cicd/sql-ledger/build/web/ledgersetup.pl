@@ -170,6 +170,7 @@ say STDERR "Writing run information to $infofile";
 
 
 open(my $runinfo, ">", $infofile) || die $!;
+$Data::Dumper::Terse=1;
 print $runinfo Dumper(\%info);
 close $runinfo;
 
