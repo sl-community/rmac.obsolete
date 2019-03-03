@@ -5,7 +5,7 @@ services:
     image: local/rmac/web
     build:
       context: ../..
-      dockerfile: .cicd/compose/build/web/Dockerfile
+      dockerfile: .cicd/sql-ledger/build/web/Dockerfile
     networks:
       - traefik
       - private

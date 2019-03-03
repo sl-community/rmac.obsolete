@@ -24,11 +24,22 @@ RUN apt-get update  && \
       less \
       atool
 
+ARG LEDGER_APACHE_RUN_USER=www-data
+ARG LEDGER_APACHE_RUN_USERID
+ARG LEDGER_APACHE_RUN_GROUP=www-data
+ARG LEDGER_APACHE_RUN_GROUPID
+
+RUN test "${LEDGER_APACHE_RUN_USER}" != "www-data" && \
+    groupadd -g ${LEDGER_APACHE_RUN_GROUPID} ${LEDGER_APACHE_RUN_GROUP} && \
+    useradd  -u ${LEDGER_APACHE_RUN_USERID} -d /nonexistent -M -r \
+             -g ${LEDGER_APACHE_RUN_GROUP} \
+             -s /bin/false ${LEDGER_APACHE_RUN_USER}
+
 
 ENV APACHE_RUN_DIR=/var/run/apache2 \
     APACHE_PID_FILE=/var/run/apache2/apache2.pid \
-    APACHE_RUN_USER=www-data \
-    APACHE_RUN_GROUP=www-data \
+    APACHE_RUN_USER=${LEDGER_APACHE_RUN_USER} \
+    APACHE_RUN_GROUP=${LEDGER_APACHE_RUN_GROUP} \
     APACHE_LOG_DIR=/var/log/apache2
 
 RUN a2enmod cgi rewrite && \

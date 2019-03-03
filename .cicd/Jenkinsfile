@@ -22,13 +22,13 @@ node {
     ]) {
     
     stage ('Compose') {
-      dir('.cicd/compose') {
+      dir('.cicd/sql-ledger') {
 	  sh compose_cmd + ' up -d --force-recreate --build'
 	}
     }
 
     stage ('Initialize') {
-      dir('.cicd/compose') {
+      dir('.cicd/sql-ledger') {
         sh compose_cmd + ' exec -T -u www-data web ledgersetup.pl ' + ledger_path_prefix
       }
     }

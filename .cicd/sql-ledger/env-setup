@@ -1,0 +1,8 @@
+export LEDGER_PORT=10000
+
+export LEDGER_APACHE_RUN_USER=$(id -un)
+export LEDGER_APACHE_RUN_USERID=$(id -u)
+export LEDGER_APACHE_RUN_GROUP=$(id -gn)
+export LEDGER_APACHE_RUN_GROUPID=$(id -g)
+
+env | grep --color=never ^LEDGER_ | sort -r
