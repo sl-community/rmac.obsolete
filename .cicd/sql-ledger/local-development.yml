@@ -16,6 +16,8 @@ services:
       - ${LEDGER_PORT}:80
     volumes:
       - ../..:/srv/www/sql-ledger
+      - ${LEDGER_DUMP_DIRECTORY}:/dumps:ro
+      - ${LEDGER_SETUP_CONFIG}:/ledgersetup.yml:ro
     depends_on:
       - db
     
