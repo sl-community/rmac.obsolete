@@ -29,11 +29,15 @@ ARG LEDGER_APACHE_RUN_USERID
 ARG LEDGER_APACHE_RUN_GROUP=www-data
 ARG LEDGER_APACHE_RUN_GROUPID
 
-RUN test "${LEDGER_APACHE_RUN_USER}" != "www-data" && \
-    groupadd -g ${LEDGER_APACHE_RUN_GROUPID} ${LEDGER_APACHE_RUN_GROUP} && \
-    useradd  -u ${LEDGER_APACHE_RUN_USERID} -d /nonexistent -M -r \
-             -g ${LEDGER_APACHE_RUN_GROUP} \
-             -s /bin/false ${LEDGER_APACHE_RUN_USER}
+RUN if test "${LEDGER_APACHE_RUN_USER}" != "www-data"; then \
+      groupadd -g ${LEDGER_APACHE_RUN_GROUPID} ${LEDGER_APACHE_RUN_GROUP} && \
+      useradd  -u ${LEDGER_APACHE_RUN_USERID} -d /nonexistent -M -r \
+               -g ${LEDGER_APACHE_RUN_GROUP} \
+               -s /bin/false ${LEDGER_APACHE_RUN_USER} \
+    else \
+      echo "APACHE_RUN_USER is www-data -- Nothing to do here" \
+    fi
+    
 
 
 ENV APACHE_RUN_DIR=/var/run/apache2 \
