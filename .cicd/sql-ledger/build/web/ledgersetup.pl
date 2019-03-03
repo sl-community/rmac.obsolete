@@ -246,6 +246,9 @@ sub expand_list_of_dumps {
         $entry =~ s/\{\{(.*)?\}\}/_evaluate($1)/ge;
         push @result, glob($entry);
     }
+
+    say STDERR "Expanded list of dumps: @result";
+    
     return @result;
 }
 
