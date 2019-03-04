@@ -80,7 +80,7 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 $instance->{databases}{names} = [];
 
 my @expanded_list = expand_list_of_dumps(@{$instance->{databases}{dumps}});    
-@expanded_list || $info{status} = "No database dump available";
+$info{status} = "No database dump available" unless @expanded_list;
 
 foreach my $dumpfile ( @expanded_list ) {
     if (-r $dumpfile) {
