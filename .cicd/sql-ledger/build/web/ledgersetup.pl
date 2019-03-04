@@ -20,17 +20,17 @@ my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
 my %info = (
     timestamp => Time::Piece->new->strftime,
-    status    => 'Unknown',
+    status    => 'Not finshed',
 );
 
 
 my ($instance) = grep {
-    (exists $_->{name} && $_->{name} eq $instance_identifier)
-        || (exists $_->{id} && $_->{id} eq $instance_identifier)
-    } @$instances;
+    (exists $_->{name} && $_->{name} eq $instance_identifier) ||
+    (exists $_->{id} && $_->{id} eq $instance_identifier)
+} @$instances;
 
-defined $instance
-    || die "Instance with identifier '$instance_identifier' not found in config\n";
+defined $instance || die
+    "Instance with identifier '$instance_identifier' not found in config\n";
 
 
 say STDERR "Initializing $instance_identifier...";
@@ -79,7 +79,10 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 # Create and load databases:
 $instance->{databases}{names} = [];
 
-foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
+my @expanded_list = expand_list_of_dumps(@{$instance->{databases}{dumps}});    
+@expanded_list || $info{status} = "No database dump available";
+
+foreach my $dumpfile ( @expanded_list ) {
     if (-r $dumpfile) {
         say STDERR "$dumpfile is readable";
     }
@@ -87,6 +90,8 @@ foreach my $dumpfile (expand_list_of_dumps(@{$instance->{databases}{dumps}})) {
         die "Unreadable dumpfile: $dumpfile\n";
     }
 
+    # If dumpfile is something like "/foo/bar/acme.20190303.bz2",
+    # dbname will be "acme":
     my ($dbname) = $dumpfile =~ m|.*/([^.]+)|;
 
     push @{$instance->{databases}{names}}, $dbname;
@@ -163,6 +168,7 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
+
 my $infofile = "/tmp/ledgersetup/runinfo";
 make_path(dirname($infofile));
 
@@ -175,6 +181,7 @@ print $runinfo Dumper(\%info);
 close $runinfo;
 
 
+exit;
 #########################################################################
 
 
@@ -255,8 +262,6 @@ sub expand_list_of_dumps {
 
     say STDERR "Expanded list of dumps: @result";
 
-    $info{status} = "No database dump available";
-    
     return @result;
 }
 
