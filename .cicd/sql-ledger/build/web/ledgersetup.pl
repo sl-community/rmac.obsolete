@@ -166,16 +166,16 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
-status_and_exit("Finished setup (" . scalar(@expanded_list) . " databases)");
+status_and_exit("Complete (" . scalar(@expanded_list) . " databases)");
 
 #############################################################################
 
+#####################
 sub status_and_exit {
+#####################
     my ($status, $exitcode) = @_;
-
     $exitcode //= 0;
 
-    
     my %info = (
         timestamp => Time::Piece->new->strftime,
         status    => $status,
@@ -186,17 +186,17 @@ sub status_and_exit {
 
     say STDERR "Writing run information to $infofile";
 
-
     open(my $runinfo, ">", $infofile) || die $!;
     $Data::Dumper::Terse=1;
     print $runinfo Dumper(\%info);
     close $runinfo;
 
-    exit $$exitcode;
+    exit $exitcode;
 }
 
-
+#######################
 sub get_members_entry {
+#######################
     my %args = @_;
 
     my $pw_hash = crypt($args{pass}, substr($args{name}, 0, 2));
@@ -259,7 +259,9 @@ warehouse_id=
 
 
 
+##########################
 sub expand_list_of_dumps {
+##########################
     my @result = ();
 
     say STDERR "expand_list_of_dumps: @_";
