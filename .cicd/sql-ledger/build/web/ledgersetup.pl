@@ -18,11 +18,6 @@ my $instances = YAML::Tiny->read( '/ledgersetup.yml' )->[0]{instances};
 
 
 
-my %info = (
-    timestamp => Time::Piece->new->strftime,
-    status    => 'Not finshed',
-);
-
 
 my ($instance) = grep {
     (exists $_->{name} && $_->{name} eq $instance_identifier) ||
@@ -80,7 +75,7 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 $instance->{databases}{names} = [];
 
 my @expanded_list = expand_list_of_dumps(@{$instance->{databases}{dumps}});    
-$info{status} = "No database dump available" unless @expanded_list;
+status_and_exit("No database dump available", 1) unless @expanded_list;
 
 foreach my $dumpfile ( @expanded_list ) {
     if (-r $dumpfile) {
@@ -94,6 +89,9 @@ foreach my $dumpfile ( @expanded_list ) {
     # dbname will be "acme":
     my ($dbname) = $dumpfile =~ m|.*/([^.]+)|;
 
+    defined $dbname || die
+        "Cannot detect database name out of filename: $dumpfile";
+    
     push @{$instance->{databases}{names}}, $dbname;
     
 
@@ -168,21 +166,34 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
+status_and_exit("Finished setup (" . scalar(@expanded_list) . " databases)");
 
-my $infofile = "/tmp/ledgersetup/runinfo";
-make_path(dirname($infofile));
+#############################################################################
 
-say STDERR "Writing run information to $infofile";
+sub status_and_exit {
+    my ($status, $exitcode) = @_;
+
+    $exitcode //= 0;
+
+    
+    my %info = (
+        timestamp => Time::Piece->new->strftime,
+        status    => $status,
+    );
+
+    my $infofile = "/tmp/ledgersetup/runinfo";
+    make_path(dirname($infofile));
+
+    say STDERR "Writing run information to $infofile";
 
 
-open(my $runinfo, ">", $infofile) || die $!;
-$Data::Dumper::Terse=1;
-print $runinfo Dumper(\%info);
-close $runinfo;
+    open(my $runinfo, ">", $infofile) || die $!;
+    $Data::Dumper::Terse=1;
+    print $runinfo Dumper(\%info);
+    close $runinfo;
 
-
-exit;
-#########################################################################
+    exit $$exitcode;
+}
 
 
 sub get_members_entry {
