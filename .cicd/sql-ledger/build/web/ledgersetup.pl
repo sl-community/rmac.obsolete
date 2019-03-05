@@ -75,7 +75,7 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 $instance->{databases}{names} = [];
 
 my @expanded_list = expand_list_of_dumps(@{$instance->{databases}{dumps}});    
-status_and_exit("No database dump available", 1) unless @expanded_list;
+status_and_exit("No database dump was available", 1) unless @expanded_list;
 
 foreach my $dumpfile ( @expanded_list ) {
     if (-r $dumpfile) {
