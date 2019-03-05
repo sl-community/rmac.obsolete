@@ -6,8 +6,11 @@ node {
   
   def compose_cmd = 'docker-compose -p ' + ledger_path_prefix
 
-  properties([[$class: 'BuildDiscarderProperty',
-             strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
+  properties([
+    [$class: 'BuildDiscarderProperty',
+              strategy: [$class: 'LogRotator', numToKeepStr: '5']]
+  ])
+  pipelineTriggers([[$class: "TimerTrigger", spec: "H(30) 7 * * *"]])
 	     
   ansiColor('xterm') {
 
