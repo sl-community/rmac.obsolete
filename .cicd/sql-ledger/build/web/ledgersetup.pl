@@ -75,7 +75,7 @@ system "createuser -h db -e -U postgres --superuser sql-ledger";
 $instance->{databases}{names} = [];
 
 my @expanded_list = expand_list_of_dumps(@{$instance->{databases}{dumps}});    
-status_and_exit("No database dump available", 1) unless @expanded_list;
+status_and_exit("No database dump was available", 1) unless @expanded_list;
 
 foreach my $dumpfile ( @expanded_list ) {
     if (-r $dumpfile) {
@@ -166,7 +166,11 @@ foreach my $user (@{$instance->{users}}) {
 }
 
 
-status_and_exit("Complete (" . scalar(@expanded_list) . " databases)");
+status_and_exit(
+    "Complete (" . scalar(@expanded_list) . " database(s): " .
+        join(", ", @expanded_list[0,1]) .
+        " [, ...])"
+    );
 
 #############################################################################
 
@@ -283,7 +287,8 @@ sub expand_list_of_dumps {
 sub _evaluate {
     my $expr = shift;
 
-    die "Invalid expression: $expr\n" unless $expr =~ m|build_time\(|;
+    die "Invalid expression: $expr\n"
+        unless $expr =~ m/(build_time|latest_nonempty_dir_in)\(/;
     
     return eval $expr;
 }
@@ -292,4 +297,33 @@ sub build_time {
     my $format = shift;
 
     return Time::Piece->new->localtime->strftime($format); 
+}
+
+
+sub latest_nonempty_dir_in {
+    my $dir = $_[0];
+
+    my ($newest_file, $newest_time) = (undef, 0);
+
+    opendir(my $dh, $dir) or die "Error opening $dir: $!";
+    while (my $file = readdir($dh)) {
+        next if $file eq '.' || $file eq '..';
+        my $path = File::Spec->catfile($dir, $file);
+        next unless (-d $path);
+        
+        my ($mtime) = (stat($path))[9];
+        next if $mtime < $newest_time;
+        
+        # We have a directory, but does it have some content?
+        opendir(my $pathtest, $path) || die $!;
+        my $has_content = grep ! /^\.\.?/, readdir $pathtest;
+        closedir $pathtest;
+        
+        next unless $has_content;
+        
+        ($newest_file, $newest_time) = ($file, $mtime);
+    }
+    closedir $dh;
+
+    return $newest_file;
 }
