@@ -50,9 +50,10 @@ sub download {
 
 
     # Headline:
+    my $headline = "Umsatzsteuer-Voranmeldung " . $c->param("year");
     $doc->fill_in(
         cells => ["B1"],
-        text  => ["Umsatzsteuer-Voranmeldung " . $c->param("year")],
+        text  => [$headline],
     );
 
     
@@ -105,7 +106,7 @@ sub download {
         from_sql => "company/name_address",
     );
 
-    $doc->fill_in(
+    my $result_b9 = $doc->fill_in(
         cells    => ["B9"],
         from_sql => "company/businessnumber",
     );
@@ -225,6 +226,7 @@ sub download {
 
     $doc->fill_in(
         cells => ["J56"],
+        types => ["string"],
         text  => [$result_d9->[0]],
     );   
     $doc->fill_in(
@@ -259,6 +261,11 @@ sub download {
     $doc->fill_in(
         cells => ["J110"],
         text  => [$j50],
+    );   
+
+    $doc->fill_in(
+        cells => ["C116", "D116"],
+        text  => [$result_b9->[0], $headline],
     );   
 
 

@@ -64,6 +64,14 @@ sub fill_in {
     if (exists $args{text}) {
 
         while (my ($index, $cell) = each @{$args{cells}}) {
+            
+            if (exists $args{types}) {
+                #say STDERR "Setting $cell to $args{types}[$index]";
+                my $cellobj = $self->{doc}->getTableCell(0, $cell);
+                $self->{doc}->cellValueType($cellobj,
+                                            $args{types}[$index]);
+            }
+
             $self->{doc}->updateCell(0, $cell, $args{text}[$index]);
        }
     }
