@@ -72,5 +72,5 @@ With all that done, lets bring up a container:
 
 1. Source your `env-setup`:
 
-    source path/to/env-setup
+       source path/to/env-setup
 
