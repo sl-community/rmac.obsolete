@@ -204,8 +204,8 @@ sub download {
     );
 
     $doc->fill_in(
-        cells    => ["C65", "F65", "I65"],
-        types    => ["string", "float", "float" ],
+        cells    => ["C65", "F65", "I65", "J65"],
+        types    => ["string", "float", "float", "string" ],
         from_sql => "ustva/page2",
         multirow => 1,
         bind_values => [$fromdate, $todate],

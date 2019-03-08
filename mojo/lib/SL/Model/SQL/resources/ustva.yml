@@ -344,7 +344,12 @@ page2: |
     WHEN account LIKE '3823%' THEN 2
     WHEN account LIKE '3824%' THEN 3
   END AS type_123,
-  transdate
+  --transdate,
+  CASE coalesce(taxnumber,'')
+  WHEN '' THEN '*_HINWEIS_*: ' || customer.name
+  ELSE ''
+  END as hint --customer.name
+
   FROM
     v_inline_tax INNER JOIN customer on v_inline_tax.vc_id = customer.id
   WHERE
