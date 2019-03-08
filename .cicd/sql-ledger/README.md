@@ -2,6 +2,8 @@
 
 ## Local Docker-based development
 
+### Preparations
+
 For local development with Docker containers,
 you have to make some preparations.
 We suggest to create a folder named `ledgersetup/` somewhere outside
@@ -30,7 +32,7 @@ accessible. Change it to your preferred setting.
 Furthermore, create a subfolder `dumps/`, in which you want to provide
 database dumps for sql-ledger (See `LEDGER_DUMP_DIRECTORY` above).
 It can contain arbitrary nested directory structures; how a container
-can access concrete dumps, is controlled by the configuration file.
+can access concrete dumps is controlled by a configuration file.
 
 This file is named `ledgersetup.yml` (see `LEDGER_SETUP_CONFIG` above).
 Here comes an example:
@@ -63,3 +65,12 @@ instances:
         lang: de
         database: '*'
 ```
+
+### Usage
+
+With all that done, lets bring up a container:
+
+1. Source your `env-setup`:
+
+    source path/to/env-setup
+
