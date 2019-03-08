@@ -18,6 +18,7 @@ services:
     volumes:
       - ${LEDGER_DUMP_DIRECTORY}:/dumps:ro
       - ${LEDGER_SETUP_CONFIG}:/ledgersetup.yml:ro
+    restart: unless-stopped
     depends_on:
       - db
     
@@ -32,6 +33,7 @@ services:
       - private
     volumes:
       - data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 networks:
   traefik:
