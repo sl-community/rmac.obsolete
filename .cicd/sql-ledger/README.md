@@ -74,12 +74,13 @@ With all that done, lets bring up a container:
 
        source path/to/env-setup
 
-1. Change to .cicd-Folder an bring up the container:
+1. Change to `.cicd/`-Folder and bring up the container (can take a while
+   on first build):
 
        cd .cicd/sql-ledger
        ./ledgerctl up
 
-1. Initialize with one of your configured setups
+1. Initialize the container with one of your configured setups
    (see `ledgersetup.yml` above); e.g.:
 
        ./ledgerctl init setup1
