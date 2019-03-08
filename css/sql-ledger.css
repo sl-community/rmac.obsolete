@@ -280,7 +280,7 @@ input {
   font-size: 13px;
 }
 
-table input, table textarea, button  {
+table input, table textarea, table button  {
     border-radius: 3px 3px 3px 3px;
 }
 

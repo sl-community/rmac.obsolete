@@ -22,13 +22,6 @@
 
     {
 	"type":    "perlmodule",
-	"name":    "Mojo::Pg",
-	"version": "2.35",
-	"package": { "debian9": "libmojo-pg-perl" }
-    },
-
-    {
-	"type":    "perlmodule",
 	"name":    "DBI",
 	"version": "0",
 	"package": { "debian9": "libdbi-perl" }
@@ -53,6 +46,13 @@
 	"name":    "Date::Parse",
 	"version": "0",
 	"package": { "debian9": "libtimedate-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
+	"name":    "OpenOffice::OODoc",
+	"version": "2.125",
+	"package": { "debian9": "libopenoffice-oodoc-perl" }
     },
 
     {
@@ -88,6 +88,13 @@
 	"name":    "XML::LibXML",
 	"version": "0",
 	"package": { "debian9": "libxml-libxml-perl" }
+    },
+
+    {
+	"type":    "perlmodule",
+	"name":    "YAML::Tiny",
+	"version": "0",
+	"package": { "debian9": "libyaml-tiny-perl" }
     },
 
     {

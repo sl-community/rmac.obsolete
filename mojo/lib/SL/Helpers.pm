@@ -5,12 +5,13 @@ use warnings;
 use Cwd;
 use Storable;
 use v5.10;
-use File::Path qw(make_path);
+use File::Path qw(make_path remove_tree);
 
 use lib ("mojo/lib");
 use SL::Model::Config;
 use Time::Piece;
 use Mojo::Pg;
+use File::pushd;
 
 
 sub register {
@@ -81,6 +82,31 @@ sub register {
             }
 
             return 1; # Not ok
+        }
+    );
+
+
+    $app->helper(
+        private_spool_realm => sub {
+            my $c = shift;
+            my ($realm, %args) = @_;
+            $args{empty} //= 0; 
+
+            my $myspool = $c->userconfig->val('x_myspool');
+            -d $myspool || make_path($myspool, {mode => 0700});
+            -w $myspool || die "Private spool is not writeable.";
+
+            my $spooldir = pushd($myspool);
+            my $realmdir;
+            
+            remove_tree($realm) if $args{empty};
+            make_path($realm, {mode => 0700});
+
+            {
+                $realmdir = pushd($realm);
+            }
+
+            return $realmdir;
         }
     );
 
