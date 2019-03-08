@@ -209,7 +209,7 @@ sub get_members_entry {
 
     if ($args{database} eq '*') {
         @databases = @{$instance->{databases}{names}};
-        $multidb_user = 1;
+        $multidb_user = 1 if @databases > 1;
     }
 
     
