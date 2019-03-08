@@ -36,7 +36,7 @@ can access concrete dumps is controlled by a configuration file.
 
 This file is typically named `ledgersetup.yml`
 (see `LEDGER_SETUP_CONFIG` above).
-Here comes an example -- place it in your `ledgersetup/`-folder, too:
+Here comes an example &ndash; place it in your `ledgersetup/`-folder, too:
 
 ```yaml
 ---
