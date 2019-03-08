@@ -34,8 +34,9 @@ database dumps for sql-ledger (See `LEDGER_DUMP_DIRECTORY` above).
 It can contain arbitrary nested directory structures; how a container
 can access concrete dumps is controlled by a configuration file.
 
-This file is named `ledgersetup.yml` (see `LEDGER_SETUP_CONFIG` above).
-Here comes an example:
+This file is typically named `ledgersetup.yml`
+(see `LEDGER_SETUP_CONFIG` above).
+Here comes an example -- place it in your `ledgersetup/`-folder, too:
 
 ```yaml
 ---
@@ -68,7 +69,7 @@ instances:
 
 ### Usage
 
-With all that done, lets bring up a container:
+With all that done, let's bring up the dockerized application:
 
 1. Source your `env-setup`:
 
