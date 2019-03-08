@@ -168,8 +168,7 @@ foreach my $user (@{$instance->{users}}) {
 
 status_and_exit(
     "Complete (" . scalar(@expanded_list) . " database(s): " .
-        join(", ", @expanded_list[0,1]) .
-        " [, ...])"
+        $expanded_list[0] . " [...])"
     );
 
 #############################################################################
