@@ -4,8 +4,8 @@
 
 For local development with Docker containers,
 you have to make some preparations.
-We suggest to create a folder named `ledgersetup` somewhere outside
-the `rmac` project directory.
+We suggest to create a folder named `ledgersetup/` somewhere outside
+the `rmac/` project directory.
 
 In this folder, place a file `env-setup`:
 

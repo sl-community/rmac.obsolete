@@ -16,7 +16,7 @@ Contents of this directory:
 On the Jenkins host, a few environment variables must be set:
 
 `DOCKER_HOST` and `DOCKER_TLS` (if needed). Just make sure that a `docker` or
-`docker-compose` command does its work on the intended docker host.
+`docker-compose` command does its work on the intended Docker host.
 
 `LEDGER_HOST`: Hostname under which your target container is reachable.
 This is only relevant if you use Traefik as an reverse proxy.
