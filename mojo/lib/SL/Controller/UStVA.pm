@@ -110,7 +110,7 @@ sub download {
         from_sql => "company/businessnumber",
     );
 
-    $doc->fill_in(
+    my $result_d9 = $doc->fill_in(
         cells    => ["D9"],
         from_sql => "company/ust_idnr",
     );
@@ -223,6 +223,10 @@ sub download {
         text  => [$j50],
     );   
 
+    $doc->fill_in(
+        cells => ["J56"],
+        text  => [$result_d9->[0]],
+    );   
     $doc->fill_in(
         cells => ["J59"],
         text  => [$result_h17->[0] + $result_h24->[0]],
