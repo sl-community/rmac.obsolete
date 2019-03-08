@@ -124,7 +124,7 @@ sub download {
 
 
 
-    $doc->fill_in(
+    my $result_h17 = $doc->fill_in(
         cells    => ["H17"],
         from_sql => "ustva/41",
         bind_values => [$fromdate, $todate],
@@ -136,25 +136,25 @@ sub download {
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
-        cells    => ["H20"],
+    my $result_hj20 = $doc->fill_in(
+        cells    => ["H20", "J20"],
         from_sql => "ustva/81",
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
-        cells    => ["H21"],
+    my $result_hj21 = $doc->fill_in(
+        cells    => ["H21", "J21"],
         from_sql => "ustva/86",
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
-        cells    => ["H22"],
+    my $result_hj22 = $doc->fill_in(
+        cells    => ["H22", "J22"],
         from_sql => "ustva/89",
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
+    my $result_h24 = $doc->fill_in(
         cells    => ["H24"],
         from_sql => "ustva/21",
         bind_values => [$fromdate, $todate],
@@ -167,43 +167,69 @@ sub download {
     );
 
     
-    $doc->fill_in(
-        cells    => ["H31"],
+    my $result_hj31 = $doc->fill_in(
+        cells    => ["H31", "J31"],
         from_sql => "ustva/46",
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
-        cells    => ["H34"],
+    my $result_hj34 = $doc->fill_in(
+        cells    => ["H34", "J34"],
         from_sql => "ustva/52",
         bind_values => [$fromdate, $todate],
     );
 
+
+    
+    my $j36 = $result_hj20->[1] + $result_hj21->[1] + $result_hj22->[1]
+        + $result_hj31->[1] + $result_hj34->[1];
+
     $doc->fill_in(
+        cells => ["J36"],
+        text  => [$j36],
+    );   
+
+
+    my $result_j43 = $doc->fill_in(
         cells    => ["J43"],
         from_sql => "ustva/66",
         bind_values => [$fromdate, $todate],
     );
 
-    $doc->fill_in(
+    my $result_j44 = $doc->fill_in(
         cells    => ["J44"],
         from_sql => "ustva/61",
         bind_values => [$fromdate, $todate],
     );
     
-    $doc->fill_in(
+    my $result_j45 = $doc->fill_in(
         cells    => ["J45"],
         from_sql => "ustva/62",
         bind_values => [$fromdate, $todate],
     );
     
-    $doc->fill_in(
+    my $result_j47 = $doc->fill_in(
         cells    => ["J47"],
         from_sql => "ustva/67",
         bind_values => [$fromdate, $todate],
     );
 
+
+    my $j50 = $j36 + $result_j43->[0] + $result_j44->[0] + $result_j45->[0]
+        + $result_j47->[0];
+    
     $doc->fill_in(
+        cells => ["J50"],
+        text  => [$j50],
+    );   
+
+    $doc->fill_in(
+        cells => ["J59"],
+        text  => [$result_h17->[0] + $result_h24->[0]],
+    );   
+
+    
+    my $result_cfij65 = $doc->fill_in(
         cells    => ["C65", "F65", "I65", "J65"],
         types    => ["string", "float", "float", "string" ],
         from_sql => "ustva/page2",
@@ -211,12 +237,27 @@ sub download {
         bind_values => [$fromdate, $todate],
     );
 
+    my $sum_non_eu = 0;
+    $sum_non_eu += $_->[1] foreach @$result_cfij65;
+    $doc->fill_in(
+        cells => ["J60"],
+        text  => [$sum_non_eu],
+    );   
+
+
     $doc->fill_in(
         cells    => ["C112", "C113", "C114", "C118", "C120"],
         from_sql => "ustva/finanzamt",
         bind_values => ['Finanzamt']
     );
-    
+
+
+    $doc->fill_in(
+        cells => ["J110"],
+        text  => [$j50],
+    );   
+
+
     $doc->save; # Everything has been filled in.
 
     

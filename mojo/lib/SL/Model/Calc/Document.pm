@@ -115,8 +115,8 @@ sub fill_in {
                 }
                 $current_row++;
             }
-
             
+            return $result;
         }
 
         return $result->[0];
