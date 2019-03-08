@@ -21,7 +21,8 @@ On the Jenkins host, a few environment variables must be set:
 `LEDGER_HOST`: Hostname under which your target container is reachable.
 This is only relevant if you use Traefik as an reverse proxy.
 
-`LEDGER_DUMP_DIRECTORY`: Path on your Docker host, where database dumps are accessible
+`LEDGER_DUMP_DIRECTORY`: Path on your Docker host, where database dumps are
+accessible
 
 `LEDGER_SETUP_CONFIG`: Path to the ledgersetup config file on your host
 
