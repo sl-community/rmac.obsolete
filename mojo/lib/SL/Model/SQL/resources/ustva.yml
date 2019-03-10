@@ -204,7 +204,7 @@ create_view_inline_tax: |
 
 
 41: |
-  SELECT sum(amount) FROM v_inline_tax
+  SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
@@ -241,7 +241,7 @@ create_view_inline_tax: |
   
 89: |
   SELECT
-    round(round(sum(tax)::NUMERIC, 2) / 19 * 100, 2),
+    trunc(round(sum(tax)::NUMERIC, 2) / 19 * 100),
           round(sum(tax)::NUMERIC, 2)
   FROM v_inline_tax
   WHERE
@@ -252,7 +252,7 @@ create_view_inline_tax: |
   account LIKE '3804%'
 
 21: |
-  SELECT sum(amount) FROM v_inline_tax
+  SELECT trunc(sum(amount)) FROM v_inline_tax
   WHERE
   transdate BETWEEN $1 AND $2
   AND
