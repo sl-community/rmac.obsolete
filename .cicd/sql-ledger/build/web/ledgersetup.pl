@@ -168,8 +168,7 @@ foreach my $user (@{$instance->{users}}) {
 
 status_and_exit(
     "Complete (" . scalar(@expanded_list) . " database(s): " .
-        join(", ", @expanded_list[0,1]) .
-        " [, ...])"
+        $expanded_list[0] . " [...])"
     );
 
 #############################################################################
@@ -210,7 +209,7 @@ sub get_members_entry {
 
     if ($args{database} eq '*') {
         @databases = @{$instance->{databases}{names}};
-        $multidb_user = 1;
+        $multidb_user = 1 if @databases > 1;
     }
 
     

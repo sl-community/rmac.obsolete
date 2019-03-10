@@ -14,11 +14,26 @@ case $1 in
 	docker-compose -f local-development.yml down
 	;;
     init)
+	shift
 	docker-compose -f local-development.yml exec \
-		       -T -u $LEDGER_APACHE_RUN_USER web ledgersetup.pl $2
+		       -T -u $LEDGER_APACHE_RUN_USER web ledgersetup.pl $1
+	;;
+    query)
+	shift
+	docker-compose -f local-development.yml exec \
+		       -T -u $LEDGER_APACHE_RUN_USER web ledgerquery.pl "$@"
 	;;
     *)
-	echo "Usage: $0 {up|down|init <ID>}" 1>&2
+	cat <<EOF 1>&2 
+Usage: $0 COMMAND
+
+Where COMMAND is one of:
+    up
+    down
+    init <ID>
+    query <USERNAME> <YAML/KEY> [<BIND_PARAMS>...]
+EOF
+
 	exit 1
 	;;
 esac
