@@ -182,8 +182,9 @@ sub download {
 
 
     
-    my $j36 = $result_hj20->[1] + $result_hj21->[1] + $result_hj22->[1]
-        + $result_hj31->[1] + $result_hj34->[1];
+    my $j36 = sprintf("%.2f", $result_hj20->[1] + $result_hj21->[1] +
+                          $result_hj22->[1] + $result_hj31->[1] +
+                          $result_hj34->[1]);
 
     $doc->fill_in(
         cells => ["J36"],
@@ -216,8 +217,9 @@ sub download {
     );
 
 
-    my $j50 = $j36 + $result_j43->[0] + $result_j44->[0] + $result_j45->[0]
-        + $result_j47->[0];
+    my $j50 = sprintf("%.2f", $j36 +
+                          $result_j43->[0] + $result_j44->[0] +
+                          $result_j45->[0] + $result_j47->[0]);
     
     $doc->fill_in(
         cells => ["J50"],
@@ -247,7 +249,7 @@ sub download {
     $sum_non_eu += $_->[1] foreach @$result_cfij65;
     $doc->fill_in(
         cells => ["J60"],
-        text  => [$sum_non_eu],
+        text  => [int($sum_non_eu)],
     );   
 
 

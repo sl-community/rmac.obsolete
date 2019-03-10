@@ -293,25 +293,33 @@ create_view_inline_tax: |
   AND
   account LIKE '3838%'
 
+# 66: |
+#   SELECT round(sum(value)::NUMERIC, 2) from (
+#     SELECT round(sum(tax)::NUMERIC, 2) as value FROM v_inline_tax
+#     WHERE
+#     transdate BETWEEN $1 AND $2
+#     AND
+#     module = 'AP'
+#     AND
+#     account LIKE '1401%'
+#       UNION ALL
+#     SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
+#     WHERE
+#     transdate BETWEEN $1 AND $2
+#     AND
+#     module = 'AP'
+#     AND
+#     account LIKE '1406%'
+#   ) dummy
+
 66: |
-  -- TODO: Zusammenfasssen (siehe page2) ?
-  SELECT round(sum(value)::NUMERIC, 2) from (
-    SELECT sum(tax) as value FROM v_inline_tax
+  SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
     WHERE
     transdate BETWEEN $1 AND $2
     AND
     module = 'AP'
     AND
-    account LIKE '1401%'
-      UNION ALL
-    SELECT sum(tax) FROM v_inline_tax
-    WHERE
-    transdate BETWEEN $1 AND $2
-    AND
-    module = 'AP'
-    AND
-    account LIKE '1406%'
-  ) dummy
+    (account LIKE '1401%' OR account LIKE '1406%')
 
 61: |
   SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
@@ -344,21 +352,20 @@ create_view_inline_tax: |
 # Rows 65: B, C, F, I
 page2: |
   SELECT
-  CASE coalesce(taxnumber,'')
-  WHEN '' THEN '*_FEHLT_IN_DATENBANK_*'
-  ELSE taxnumber
-  END as tn,
-  amount,
-  CASE
-    WHEN account LIKE '3823%' THEN 2
-    WHEN account LIKE '3824%' THEN 3
-  END AS type_123,
-  --transdate,
-  CASE coalesce(taxnumber,'')
-  WHEN '' THEN '*_HINWEIS_*: ' || customer.name
-  ELSE ''
-  END as hint --customer.name
-
+    CASE coalesce(taxnumber,'')
+      WHEN '' THEN '*_FEHLT_IN_DATENBANK_*'
+      ELSE taxnumber
+    END as tn,
+    amount,
+    CASE
+      WHEN account LIKE '3823%' THEN 2
+      WHEN account LIKE '3824%' THEN 3
+    END AS type_123,
+    --transdate,
+    CASE coalesce(taxnumber,'')
+      WHEN '' THEN '*_HINWEIS_*: ' || customer.name
+      ELSE ''
+    END as hint --customer.name
   FROM
     v_inline_tax INNER JOIN customer on v_inline_tax.vc_id = customer.id
   WHERE
