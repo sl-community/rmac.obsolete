@@ -67,6 +67,6 @@ RUN ln -sf /dev/stderr /var/log/apache2/access.log && \
 
 EXPOSE 80
 
-COPY ${RESOURCE_DIR}/ledgersetup.pl  /usr/local/bin
+COPY ${RESOURCE_DIR}/ledger*.pl  /usr/local/bin/
 
 CMD ["apache2", "-DFOREGROUND", "-CServerName localhost"]
