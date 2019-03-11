@@ -9,7 +9,7 @@ node {
   properties([
     [$class: 'BuildDiscarderProperty',
               strategy: [$class: 'LogRotator', numToKeepStr: '5']],
-    pipelineTriggers([[$class: "TimerTrigger", spec: "30 6 * * *"]])
+    pipelineTriggers([[$class: "TimerTrigger", spec: "H(25-35) 6 * * *"]])
   ])
 	     
   ansiColor('xterm') {
