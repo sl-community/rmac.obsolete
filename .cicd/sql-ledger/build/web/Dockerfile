@@ -3,6 +3,8 @@ FROM debian:9
 
 ARG RESOURCE_DIR=.cicd/sql-ledger/build/web
 
+RUN sed -ri 's/deb\.debian\.org/ftp.uni-kl.de/g' /etc/apt/sources.list
+
 RUN apt-get update  && \  
     apt-get install -y \
       apache2 \
@@ -23,6 +25,11 @@ RUN apt-get update  && \
       zip \
       less \
       atool
+
+RUN apt-get install -y \
+    cpanminus \
+    make && \
+    cpanm DBIx::XHTML_Table
 
 ARG LEDGER_APACHE_RUN_USER=www-data
 ARG LEDGER_APACHE_RUN_USERID

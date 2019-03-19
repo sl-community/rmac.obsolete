@@ -98,6 +98,12 @@
     },
 
     {
+	"type":    "perlmodule",
+	"name":    "DBIx::XHTML_Table",
+	"version": "0"
+    },
+
+    {
 	"type": "executable",
 	"name": "zip",
 	"package": { "debian9": "zip" }

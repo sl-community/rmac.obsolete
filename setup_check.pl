@@ -409,7 +409,7 @@ sub get_somehow_used_modules {
         
         while (<$file>) {
             chomp;
-            if (my ($used) = m/^use\s+(\S+)(\s+|;)/) {
+            if (my ($used) = m/^\s*use\s+(\S+)(\s+|;)/) {
                 if ((!grep { $used =~ $_ } @whitelist)
                      && (!grep { $used eq $_ } @known_required_modules)
                      && (!Module::CoreList::is_core($used))
