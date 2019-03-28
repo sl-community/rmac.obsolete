@@ -32,7 +32,7 @@ node {
 
     stage ('Initialize') {
       dir('.cicd/sql-ledger') {
-        sh compose_cmd + ' exec -T -u www-data web ledgersetup.pl ' + ledger_path_prefix
+        sh compose_cmd + ' exec -T web ledgersetup.pl ' + ledger_path_prefix
       }
     }
     
