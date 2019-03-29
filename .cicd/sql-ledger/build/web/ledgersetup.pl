@@ -272,8 +272,10 @@ sub expand_list_of_dumps {
     foreach my $entry (@_) {
         say STDERR "Parsing entry: $entry";
         $entry =~ s/\{\{(.*)?\}\}/_evaluate($1)/ge;
-        say STDERR "Entry before globbing: $entry";
-        push @result, glob($entry);
+        say STDERR "Entry before globbing: >$entry<";
+        my @globbed = glob($entry);
+        say STDERR "After globbing: >", join(" ", @globbed), "<";
+        push @result, @globbed;
     }
 
     say STDERR "Expanded list of dumps: @result";
