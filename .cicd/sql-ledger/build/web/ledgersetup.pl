@@ -167,8 +167,7 @@ foreach my $user (@{$instance->{users}}) {
 
 
 status_and_exit(
-    "Complete (" . scalar(@expanded_list) . " database(s): " .
-        $expanded_list[0] . " [...])"
+    "Complete (" . scalar(@expanded_list) . " database(s); see Run Info for details.) " 
     );
 
 #############################################################################
@@ -182,6 +181,7 @@ sub status_and_exit {
     my %info = (
         timestamp => Time::Piece->new->strftime,
         status    => $status,
+        dumps     => \@expanded_list,
     );
 
     my $infofile = "/tmp/ledgersetup/runinfo";
