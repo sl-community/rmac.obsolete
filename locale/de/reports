@@ -23,6 +23,7 @@ $self{texts} = {
   'Department'                  => 'Abteilung',
   'Description'                 => 'Beschreibung',
   'Detail'                      => 'Einzelheiten',
+  'Preliminary VAT Return'      => 'Umsatzsteuer-Voranmeldung',
   'Due'                         => 'Fällig',
   'Due Date'                    => 'Fälligkeitsdatum',
   'Employee'                    => 'Arbeitnehmer',
