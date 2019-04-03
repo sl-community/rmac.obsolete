@@ -176,7 +176,7 @@ sub download {
 
     my $result_hj34 = $doc->fill_in(
         cells    => ["H34", "J34"],
-        from_sql => "ustva/52",
+        from_sql => "ustva/84",
         bind_values => [$fromdate, $todate],
     );
 
