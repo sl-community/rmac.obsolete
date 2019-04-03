@@ -95,8 +95,9 @@ sub fill_in {
 
         if (!$args{multirow}) {
             while (my ($index, $cell) = each @{$args{cells}}) {
-                #say STDERR "Filling: $cell <= $result->[0][$index]";
-                $self->{doc}->updateCell(0, $cell, $result->[0][$index]);
+                utf8::encode(my $content = $result->[0][$index]);
+                #say STDERR "Filling: $cell <= $content";
+                $self->{doc}->updateCell(0, $cell, $content);
             }
         }
         else {
@@ -111,7 +112,7 @@ sub fill_in {
                 #say STDERR "--- @current_cells ---";
 
                 while (my ($index, $cell) = each @current_cells) {
-                    my $value = $result_row->[$index];
+                    utf8::encode(my $value = $result_row->[$index]);
 
                     if (exists $args{types}) {
                         #say STDERR "Setting $cell to $args{types}[$index]";
