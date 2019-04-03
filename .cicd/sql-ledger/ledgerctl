@@ -18,6 +18,9 @@ case $1 in
 	docker-compose -f local-development.yml exec \
 		       -T -u $LEDGER_APACHE_RUN_USER web ledgersetup.pl $1
 	;;
+    show-config)
+	cat $LEDGER_SETUP_CONFIG
+	;;
     query)
 	shift
 	docker-compose -f local-development.yml exec \
@@ -31,6 +34,7 @@ Where COMMAND is one of:
     up
     down
     init <ID>
+    show-config
     query <USERNAME> <YAML/KEY> [<BIND_PARAMS>...]
 EOF
 
