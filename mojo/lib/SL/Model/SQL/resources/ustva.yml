@@ -281,7 +281,7 @@ create_view_inline_tax: |
   AND
   account LIKE '3837%'
 
-52: |
+84: |
   SELECT
     trunc(round(sum(tax)::NUMERIC, 2) / 19 * 100),
           round(sum(tax)::NUMERIC, 2)
@@ -292,25 +292,6 @@ create_view_inline_tax: |
   module = 'AP'
   AND
   account LIKE '3838%'
-
-# 66: |
-#   SELECT round(sum(value)::NUMERIC, 2) from (
-#     SELECT round(sum(tax)::NUMERIC, 2) as value FROM v_inline_tax
-#     WHERE
-#     transdate BETWEEN $1 AND $2
-#     AND
-#     module = 'AP'
-#     AND
-#     account LIKE '1401%'
-#       UNION ALL
-#     SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
-#     WHERE
-#     transdate BETWEEN $1 AND $2
-#     AND
-#     module = 'AP'
-#     AND
-#     account LIKE '1406%'
-#   ) dummy
 
 66: |
   SELECT round(sum(tax)::NUMERIC, 2) FROM v_inline_tax
