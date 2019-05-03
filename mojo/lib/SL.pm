@@ -13,10 +13,14 @@ sub startup {
     
     $self->secrets(['ok3YeeSeGh5sighe']);
 
-    $self->hook(before_dispatch => sub {
-                    my $c = shift;
-                    $c->req->url->base->path('/sl-community/rmac/feature/docker_based_development/mojo.pl');
-                    });
+    $self->hook(
+        before_dispatch => sub {
+            my $c = shift;
+            if (my $prefix = $self->req->headers->header('X-Forwarded-Prefix')) {
+                $c->req->url->base->path('$prefix/mojo.pl')
+            }
+               
+        });
     
     my $r = $self->routes;
 
