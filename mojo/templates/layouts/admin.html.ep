@@ -2,10 +2,7 @@
 <html>
   <head>
     <title>Administration</title>
-    <link
-       rel="stylesheet"
-       href="css/sql-ledger.css"
-       type="text/css" title="SQL-Ledger stylesheet" />
+    %= stylesheet '/css/legacy/sql-ledger.css', title => "SQL-Ledger stylesheet"
     %= javascript '/jquery.min.js'
 
     <style>
