@@ -391,7 +391,7 @@ sub admin_button {
         qq|<button type="submit" class="submit" | .
         qq|name="login" value="root login" | .
         qq|formmethod="$form_method" | .
-        qq|formaction="$content_prefix/mojo.pl/$path">| .
+        qq|formaction="mojo.pl/$path">| .
         $locale->text($label) .
         qq|</button>\n|;
 
