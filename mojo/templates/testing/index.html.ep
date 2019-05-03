@@ -40,9 +40,7 @@
 %# %= submit_button l('Continue'), class => 'submit'
 
 
-% if ($type eq 'admin') {
 <h2><%= l 'Environment variables' %>:</h2>
 <pre>
 <%= dumper(\%ENV) %>
 </pre>
-% }
