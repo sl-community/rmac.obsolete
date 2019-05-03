@@ -12,6 +12,11 @@ sub startup {
     $self->plugin('I18N', no_header_detect => 1);
     
     $self->secrets(['ok3YeeSeGh5sighe']);
+
+    $self->hook(before_dispatch => sub {
+                    my $c = shift;
+                    $ENV{MOJO_REVERSE_PROXY} = 1
+                    });
     
     my $r = $self->routes;
 

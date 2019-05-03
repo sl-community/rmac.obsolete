@@ -6,8 +6,6 @@ services:
     build:
       context: ../..
       dockerfile: .cicd/sql-ledger/build/web/Dockerfile
-    environment:
-      - MOJO_REVERSE_PROXY=1
     networks:
       - traefik
       - private
