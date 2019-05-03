@@ -17,7 +17,7 @@ sub startup {
         before_dispatch => sub {
             my $c = shift;
             if (my $prefix = $c->req->headers->header('X-Forwarded-Prefix')) {
-                $c->req->url->base->path('$prefix/mojo.pl')
+                $c->req->url->base->path("$prefix/mojo.pl")
             }
                
         });
