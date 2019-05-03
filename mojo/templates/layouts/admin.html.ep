@@ -3,7 +3,7 @@
   <head>
     <title>Administration</title>
     %= stylesheet '/css/legacy/sql-ledger.css', title => "SQL-Ledger stylesheet"
-    %= javascript '/jquery.min.js'
+    %= javascript '/js/jquery.min.js'
 
     <style>
     </style>
