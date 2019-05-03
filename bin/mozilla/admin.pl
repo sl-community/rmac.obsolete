@@ -373,18 +373,6 @@ $software
 
 sub admin_button {
     my ($label, $path) = @_;
-
-    # $ENV{SCRIPT_NAME} could be
-    #   /admin.pl
-    #   /rmac/admin.pl
-    #   /rmac/community/admin.pl
-    #   ...
-    # We need the URL prefix.
-    
-    my $content_prefix = $ENV{SCRIPT_NAME};
-    #use Data::Dumper; print STDERR Dumper(\%ENV);
-    
-    #$content_prefix =~ s|/admin\.pl$||;
     
     return "\n" .
         qq|<button type="submit" class="submit" | .
