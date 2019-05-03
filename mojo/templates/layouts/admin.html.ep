@@ -4,7 +4,7 @@
     <title>Administration</title>
     <link
        rel="stylesheet"
-       href="<%= url_for('/')->path->to_dir->to_abs_string . 'css/sql-ledger.css' %>"
+       href="css/sql-ledger.css"
        type="text/css" title="SQL-Ledger stylesheet" />
     %= javascript '/jquery.min.js'
 

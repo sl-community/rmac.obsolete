@@ -382,10 +382,9 @@ sub admin_button {
     # We need the URL prefix.
     
     my $content_prefix = $ENV{SCRIPT_NAME};
-    use Data::Dumper;
-    print STDERR Dumper(\%ENV);
+    #use Data::Dumper; print STDERR Dumper(\%ENV);
     
-    $content_prefix =~ s|/admin\.pl$||;
+    #$content_prefix =~ s|/admin\.pl$||;
     
     return "\n" .
         qq|<button type="submit" class="submit" | .
