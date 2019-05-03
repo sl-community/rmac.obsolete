@@ -15,7 +15,8 @@ sub startup {
 
     $self->hook(before_dispatch => sub {
                     my $c = shift;
-                    $ENV{MOJO_REVERSE_PROXY} = 1
+                    push @{$c->req->url->base->path->trailing_slash(1)},
+                        shift @{$c->req->url->path->leading_slash(0)};
                     });
     
     my $r = $self->routes;

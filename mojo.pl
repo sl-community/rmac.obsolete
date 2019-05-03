@@ -7,6 +7,8 @@ BEGIN {
 
     # In current versions of Mojolicious this can be done in startup:
     # $self->max_request_size(1024**3);
+
+    $ENV{MOJO_REVERSE_PROXY} = 1;
 }
 
 
