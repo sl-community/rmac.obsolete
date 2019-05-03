@@ -373,22 +373,12 @@ $software
 
 sub admin_button {
     my ($label, $path) = @_;
-
-    # $ENV{SCRIPT_NAME} could be
-    #   /admin.pl
-    #   /rmac/admin.pl
-    #   /rmac/community/admin.pl
-    #   ...
-    # We need the URL prefix.
-    
-    my $content_prefix = $ENV{SCRIPT_NAME};
-    $content_prefix =~ s|/admin\.pl$||;
     
     return "\n" .
         qq|<button type="submit" class="submit" | .
         qq|name="login" value="root login" | .
         qq|formmethod="$form_method" | .
-        qq|formaction="$content_prefix/mojo.pl/$path">| .
+        qq|formaction="mojo.pl/$path">| .
         $locale->text($label) .
         qq|</button>\n|;
 

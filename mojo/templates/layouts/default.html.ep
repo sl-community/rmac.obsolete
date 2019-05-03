@@ -2,12 +2,9 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link
-       rel="stylesheet"
-       href="<%= url_for('/')->path->to_dir->to_abs_string . 'css/' . userconfig->val('stylesheet') %>"
-       type="text/css" title="SQL-Ledger stylesheet" />
 
-    %= javascript '/jquery.min.js'
+    %= stylesheet '/css/legacy/' . userconfig->val('stylesheet')
+    %= javascript '/js/jquery.min.js'
 
     <style>
       th.field-with-error    { color:      #dd0000; font-weight: bold; }

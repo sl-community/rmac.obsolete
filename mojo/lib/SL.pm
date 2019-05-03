@@ -12,6 +12,15 @@ sub startup {
     $self->plugin('I18N', no_header_detect => 1);
     
     $self->secrets(['ok3YeeSeGh5sighe']);
+
+    $self->hook(
+        before_dispatch => sub {
+            my $c = shift;
+            if (my $prefix = $c->req->headers->header('X-Forwarded-Prefix')) {
+                $c->req->url->base->path("$prefix/mojo.pl")
+            }
+               
+        });
     
     my $r = $self->routes;
 
@@ -46,7 +55,7 @@ sub startup {
     );
 
 
-    $auth->any('/testing/:type')->to('Testing#index');
+    $auth->any('/testing')->to('Testing#index');
     
     $auth->any('/gobd')                ->to('GoBD#index');
     $auth->get('/gobd/show/#filename') ->to('GoBD#show');
