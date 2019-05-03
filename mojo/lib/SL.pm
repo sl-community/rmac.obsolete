@@ -16,7 +16,7 @@ sub startup {
     $self->hook(
         before_dispatch => sub {
             my $c = shift;
-            if (my $prefix = $self->req->headers->header('X-Forwarded-Prefix')) {
+            if (my $prefix = $c->req->headers->header('X-Forwarded-Prefix')) {
                 $c->req->url->base->path('$prefix/mojo.pl')
             }
                
