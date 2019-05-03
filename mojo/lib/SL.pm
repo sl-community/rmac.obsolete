@@ -15,8 +15,7 @@ sub startup {
 
     $self->hook(before_dispatch => sub {
                     my $c = shift;
-                    push @{$c->req->url->base->path->trailing_slash(1)},
-                        shift @{$c->req->url->path->leading_slash(0)};
+                    $c->req->url->base->path('/sl-community/rmac/feature/docker_based_development');
                     });
     
     my $r = $self->routes;
