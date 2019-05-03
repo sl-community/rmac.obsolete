@@ -21,7 +21,8 @@ node {
     withEnv([
       "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
       "LEDGER_HOST="           + env.LEDGER_HOST,
-      "LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY
+      "LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY,
+      "MOJO_REVERSE_PROXY=1"
     ]) {
     
     stage ('Compose') {

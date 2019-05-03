@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Administration</title>
-    %= stylesheet url_for('/css/legacy/sql-ledger.css'), title => "SQL-Ledger stylesheet"
+    %= stylesheet '/css/legacy/sql-ledger.css', title => "SQL-Ledger stylesheet"
     %= javascript '/jquery.min.js'
 
     <style>
