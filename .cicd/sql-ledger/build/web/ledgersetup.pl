@@ -38,6 +38,7 @@ my $rootpw_hash = crypt($instance->{rootpw}, "root");
 chdir("/srv/www/sql-ledger") || die $!;
 make_path("users");
 
+say STDERR "(Re)creating users/members...";
 open(my $members, ">", 'users/members') || die $!;
 
 print $members <<EOF;
@@ -163,6 +164,11 @@ foreach my $user (@{$instance->{users}}) {
     );
 
     close $members;
+
+    if (my @confs = glob("users/${name}*.conf")) {
+        say "Removing old users/*.conf file(s): @confs";
+        unlink(@confs) || die $!;
+    }
 }
 
 
