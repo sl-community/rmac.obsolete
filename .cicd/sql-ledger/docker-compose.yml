@@ -17,7 +17,7 @@ services:
       traefik.frontend.redirect.entryPoint: https
     volumes:
       - ${LEDGER_DUMP_DIRECTORY}:/dumps:ro
-      - ${LEDGER_SETUP_CONFIG}:/ledgersetup.yml:ro
+      - ./ledgersetup-quickrestore.yml:/ledgersetup.yml:ro
     restart: unless-stopped
     depends_on:
       - db
