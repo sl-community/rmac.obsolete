@@ -27,8 +27,8 @@ node {
     
     stage ('Compose') {
       dir('.cicd/sql-ledger') {
-	  sh echo Hello
-	  sh env
+	  sh "echo Hello"
+	  sh "env"
 	}
     }
     
