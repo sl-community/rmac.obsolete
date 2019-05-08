@@ -25,8 +25,7 @@ node {
     
     stage ('Compose') {
       dir('.cicd/sql-ledger') {
-	  sh "echo Hello"
-	  sh "env| sort"
+	  sh compose_cmd + ' up -d --force-recreate --build'
 	}
     }
     
