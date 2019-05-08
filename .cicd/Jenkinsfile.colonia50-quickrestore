@@ -6,11 +6,13 @@ node {
   
   def compose_cmd = 'docker-compose -p ' + ledger_path_prefix
 
+  /*
   properties([
     [$class: 'BuildDiscarderProperty',
               strategy: [$class: 'LogRotator', numToKeepStr: '5']]
   ])
-	     
+  */
+
   ansiColor('xterm') {
 
     stage ('Clone') {
@@ -30,5 +32,6 @@ node {
 	}
     }
     
+    }
   }
 }
