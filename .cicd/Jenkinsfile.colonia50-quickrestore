@@ -27,6 +27,7 @@ node {
     stage ('Compose') {
       dir('.cicd/sql-ledger') {
           sh "echo XXXXXXXXXXX $LEDGER_SETUP_CONFIG"
+	  sh "ls -l"
 	  sh compose_cmd + ' up -d --force-recreate --build'
 	}
     }
