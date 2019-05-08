@@ -6,12 +6,10 @@ node {
   
   def compose_cmd = 'docker-compose -p ' + ledger_path_prefix
 
-  /*
   properties([
     [$class: 'BuildDiscarderProperty',
               strategy: [$class: 'LogRotator', numToKeepStr: '5']]
   ])
-  */
 
   ansiColor('xterm') {
 
@@ -28,7 +26,7 @@ node {
     stage ('Compose') {
       dir('.cicd/sql-ledger') {
 	  sh "echo Hello"
-	  sh "env"
+	  sh "env| sort"
 	}
     }
     
