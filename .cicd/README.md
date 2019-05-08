@@ -2,7 +2,7 @@
 
 Contents of this directory:
 
-* `Jenkinsfile`
+* `Jenkinsfile.*`
 
     For use with Jenkins (Groovy scripted pipeline)
 
