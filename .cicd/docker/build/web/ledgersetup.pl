@@ -7,6 +7,65 @@ use YAML::Tiny;
 use Data::Dumper;
 use File::Basename;
 use Time::Piece;
+use Getopt::Long;
+
+# Basic checks and tasks:
+say STDERR "Running with permissions of user: ", scalar(getpwuid( $< ));
+
+exists $ENV{LEDGER_DOCUMENT_ROOT} ||
+    die "LEDGER_DOCUMENT_ROOT environment variable not defined.\n";
+
+chdir($ENV{LEDGER_DOCUMENT_ROOT}) || die $!;
+
+
+
+
+my %opts;
+
+GetOptions(
+    \%opts,
+    "init",
+    "rootpw=s") || die;
+
+
+
+init() if exists $opts{init};
+
+rootpw() if exists $opts{rootpw};
+
+
+sub init {
+    say STDERR "Initializing/Clearing users and spool folders...";
+
+    remove_tree("users", "spool");
+    make_path("users", "spool");
+}
+
+
+sub rootpw {
+    say STDERR "(Re)creating users/members with single root entry...";
+
+    my $rootpw_hash = crypt($opts{rootpw}, "root");
+
+    -d "users" || die "No users directory found. Use --init before?\n";
+    open(my $members, ">", 'users/members') || die $!;
+
+    print $members <<EOF;
+# Run my Accounts Accounting members
+
+[root login]
+password=$rootpw_hash
+EOF
+    close $members;
+}
+
+
+
+
+=for nix
+
+
+
 
 # We will be called with e.g. "/sl-community/rmac/develop"
 

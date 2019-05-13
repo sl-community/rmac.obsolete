@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  web:
+    build:
+      args:
+        BUILD_ENV: prod
+        LEDGER_APACHE_RUN_USER:  www-data
+        LEDGER_APACHE_RUN_GROUP: www-data
+    restart: unless-stopped

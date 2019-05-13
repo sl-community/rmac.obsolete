@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  web:    
+    image: local/rmac/web
+    build:
+      context: build/web
+      args:
+        LEDGER_DOCUMENT_ROOT:  ${LEDGER_ADMIN_PASSWORD:-/srv/www/sql-ledger}
+        LEDGER_ADMIN_PASSWORD: ${LEDGER_ADMIN_PASSWORD:-secret}
+        LEDGER_POSTGRES_USER:  ${LEDGER_POSTGRES_USER:-sql-ledger}

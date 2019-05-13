@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  db:
+    image: local/rmac/db
+    build:
+      context: build/db
+    networks:
+      - private
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:

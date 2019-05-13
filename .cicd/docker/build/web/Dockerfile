@@ -1,7 +1,20 @@
-FROM debian:9
-# (We could not use 9-slim because of problems installing  postgresql-client)
+ARG BUILD_ENV
 
-ARG RESOURCE_DIR=.cicd/sql-ledger/build/web
+
+FROM debian:9 AS build_local
+# nothing special to do here. Docroot will be bind-mounted.
+
+
+FROM debian:9 AS build_prod
+ARG LEDGER_DOCUMENT_ROOT
+ONBUILD RUN install -d -o www-data -g www-data     ${LEDGER_DOCUMENT_ROOT}
+ONBUILD COPY --chown=www-data:www-data ../../../.. ${LEDGER_DOCUMENT_ROOT}
+
+
+
+
+FROM build_${BUILD_ENV}
+ARG LEDGER_DOCUMENT_ROOT
 
 RUN sed -ri 's/deb\.debian\.org/ftp.uni-kl.de/g' /etc/apt/sources.list
 
@@ -31,9 +44,9 @@ RUN apt-get install -y \
     make && \
     cpanm DBIx::XHTML_Table
 
-ARG LEDGER_APACHE_RUN_USER=www-data
+ARG LEDGER_APACHE_RUN_USER
 ARG LEDGER_APACHE_RUN_USERID
-ARG LEDGER_APACHE_RUN_GROUP=www-data
+ARG LEDGER_APACHE_RUN_GROUP
 ARG LEDGER_APACHE_RUN_GROUPID
 
 RUN if test "${LEDGER_APACHE_RUN_USER}" != "www-data"; then \
@@ -58,14 +71,8 @@ RUN a2enmod cgi rewrite && \
     a2disconf other-vhosts-access-log && \
     rm -f /etc/apache2/sites-available/*
 
-COPY ${RESOURCE_DIR}/apache_sql-ledger.conf \
-     /etc/apache2/sites-available/sql-ledger.conf
+COPY apache_sql-ledger.conf /etc/apache2/sites-available/sql-ledger.conf
 
-
-RUN install -d -o www-data -g www-data /srv/www/sql-ledger
-
-
-COPY --chown=www-data:www-data . /srv/www/sql-ledger
 
 RUN a2ensite sql-ledger
 
@@ -74,6 +81,10 @@ RUN ln -sf /dev/stderr /var/log/apache2/access.log && \
 
 EXPOSE 80
 
-COPY ${RESOURCE_DIR}/ledger*.pl  /usr/local/bin/
+COPY ledger*.pl  /usr/local/bin/
+
+
 
 CMD ["apache2", "-DFOREGROUND", "-CServerName localhost"]
+
+ENV LEDGER_DOCUMENT_ROOT=${LEDGER_DOCUMENT_ROOT}
