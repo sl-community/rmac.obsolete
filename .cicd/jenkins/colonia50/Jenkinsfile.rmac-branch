@@ -1,10 +1,7 @@
 node {
 
   def ledger_kind = 'rmac'
-
-  def compose_project = ledger_kind + '_' + env.BRANCH_NAME
-  
-  def compose_cmd = 'docker-compose -f web.prod.local -p ' + compose_project
+  def compose_cmd
 
   properties([
     [$class: 'BuildDiscarderProperty',
@@ -16,6 +13,8 @@ node {
 
     stage ('Clone') {
       checkout scm
+      def branch = sh(script: 'rev=$(git name-rev --name-only HEAD)', returnStdout: true)
+      compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_kind + '_' + branch
     }
 
     withEnv([
