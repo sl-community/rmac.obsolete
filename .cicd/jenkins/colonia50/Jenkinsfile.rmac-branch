@@ -14,7 +14,8 @@ node {
 
     stage ('Clone') {
       checkout scm
-      def branch_name = sh(script: 'rev=$(git symbolic-ref --short HEAD)', returnStdout: true)
+      def branch_name = 'foo' // sh(script: 'rev=$(git symbolic-ref --short HEAD)', returnStdout: true)
+      sh "env"
       ledger_path_prefix = ledger_kind + '/' + branch_name;
       compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_kind + ledger_path_prefix
 
