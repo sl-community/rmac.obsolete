@@ -87,3 +87,7 @@ Usage: /usr/local/bin/ledgerquery.pl USERNAME  YAML/KEY  [BIND_PARAMS...]
 ```
 
 (this executes the `test1` statement in `test.yml`.)
+
+
+## Deploying production containers with Jenkins:
+

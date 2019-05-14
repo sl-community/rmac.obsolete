@@ -18,23 +18,20 @@ node {
       checkout scm
     }
 
-/*
     withEnv([
-      "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
-      "LEDGER_HOST="           + env.LEDGER_HOST,
-      "LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY
+      //"LEDGER_PATH_PREFIX="    + ledger_path_prefix,
+      //"LEDGER_HOST="           + env.LEDGER_HOST,
+      //"LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY
       //"LEDGER_SETUP_CONFIG="   + './ledgersetup-quickrestore.yml'
     ]) {
     
     stage ('Compose') {
-      dir('.cicd/sql-ledger') {
-          sh "echo XXXXXXXXXXX $LEDGER_SETUP_CONFIG"
+      dir('.cicd/docker') {
 	  sh "ls -l"
 	  sh compose_cmd + ' up -d --force-recreate --build'
 	}
     }
     
     }
-*/
   }
 }
