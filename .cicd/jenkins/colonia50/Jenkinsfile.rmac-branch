@@ -1,7 +1,8 @@
 node {
 
-  def ledger_kind = 'rmac'
+  def ledger_kind = '/rmac'
   def compose_cmd
+  def ledger_path_prefix
 
   properties([
     [$class: 'BuildDiscarderProperty',
@@ -13,13 +14,15 @@ node {
 
     stage ('Clone') {
       checkout scm
-      def branch = sh(script: 'rev=$(git name-rev --name-only HEAD)', returnStdout: true)
-      compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_kind + '_' + branch
+      def branch_name = sh(script: 'rev=$(git symbolic-ref --short HEAD)', returnStdout: true)
+      ledger_path_prefix = ledger_kind + '/' + branch_name;
+      compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_kind + ledger_path_prefix
+
     }
 
     withEnv([
-      //"LEDGER_PATH_PREFIX="    + ledger_path_prefix,
-      //"LEDGER_HOST="           + env.LEDGER_HOST,
+      "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
+      "LEDGER_HOST="           + env.LEDGER_HOST,
       //"LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY
       //"LEDGER_SETUP_CONFIG="   + './ledgersetup-quickrestore.yml'
     ]) {
