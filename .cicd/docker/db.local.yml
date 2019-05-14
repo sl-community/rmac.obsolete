@@ -1,6 +1,13 @@
 version: "3"
 
 services:
+  web:
+    environment:
+      LEDGER_POSTGRES_USER: ${LEDGER_POSTGRES_USER:-sql-ledger}
+    volumes:
+      - ${LEDGER_DUMP_PATH}:/ledgersetup/dumps:ro
+      - ${LEDGER_CONFIG_PATH}:/ledgersetup/configs:ro
+  
   db:
     image: local/rmac/db
     build:
@@ -9,6 +16,7 @@ services:
       - private
     volumes:
       - data:/var/lib/postgresql/data
+
 
 volumes:
   data:

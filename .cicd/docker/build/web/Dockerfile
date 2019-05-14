@@ -29,6 +29,7 @@ RUN apt-get update  && \
       libfile-pushd-perl \
       libtext-csv-xs-perl \
       libopenoffice-oodoc-perl \
+      libyaml-perl \
       libyaml-tiny-perl \
       libcgi-formbuilder-perl \
       libmojolicious-perl \
@@ -83,8 +84,9 @@ EXPOSE 80
 
 COPY ledger*.pl  /usr/local/bin/
 
+ENV LEDGER_DOCUMENT_ROOT=${LEDGER_DOCUMENT_ROOT} \
+    LEDGER_APACHE_RUN_USER=${LEDGER_APACHE_RUN_USER}
 
 
 CMD ["apache2", "-DFOREGROUND", "-CServerName localhost"]
 
-ENV LEDGER_DOCUMENT_ROOT=${LEDGER_DOCUMENT_ROOT}

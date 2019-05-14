@@ -8,10 +8,16 @@ if [ -r $ENV_FILE ]; then
     echo "Environment file exists: $ENV_FILE" 1>&2
 else
     cat >$ENV_FILE <<EOF
-LEDGER_PORT=10000
-LEDGER_DUMP_DIRECTORY=
-LEDGER_SETUP_CONFIG=
+# Uncomment and adjust these:
+#LEDGER_PORT=10000
+#LEDGER_DUMP_PATH=
+#LEDGER_CONFIG_PATH=
 
+# These have reasonable default values in *.local.yml:
+#LEDGER_DOCUMENT_ROOT=
+#LEDGER_POSTGRES_USER=
+
+# These are determined from your account:
 LEDGER_APACHE_RUN_USER=$(id -un)
 LEDGER_APACHE_RUN_USERID=$(id -u)
 LEDGER_APACHE_RUN_GROUP=$(id -gn)
@@ -29,15 +35,13 @@ else
 fi
 
 echo
-echo "Your setup (via $LINK):"
+echo "Your setup:"
 echo "=============================="
 cat $LINK
 echo "=============================="
 echo
 
-source $LINK
-
-if [ ! -d "$LEDGER_DUMP_DIRECTORY" ]; then
-    echo "*** LEDGER_DUMP_DIRECTORY does not exist." 1>&2
-    exit 1
-fi
+# if [ ! -d "$LEDGER_DUMP_DIRECTORY" ]; then
+#     echo "*** LEDGER_DUMP_DIRECTORY does not exist." 1>&2
+#     exit 1
+# fi
