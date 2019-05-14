@@ -4,7 +4,7 @@ node {
 
   def compose_project = ledger_kind + '_' + env.BRANCH_NAME
   
-  def compose_cmd = 'docker-compose -p ' + compose_project
+  def compose_cmd = 'docker-compose -f web.prod.local -p ' + compose_project
 
   properties([
     [$class: 'BuildDiscarderProperty',
