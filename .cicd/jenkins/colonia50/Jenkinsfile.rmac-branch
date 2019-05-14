@@ -1,14 +1,15 @@
 node {
 
-  def ledger_kind = '/sl-community/rmac'
+  def ledger_kind = 'rmac'
 
-  def ledger_path_prefix    = ledger_kind + '/' + 'quickrestore'
+  def compose_project = ledger_kind + '_' + env.BRANCH_NAME
   
-  def compose_cmd = 'docker-compose -p ' + ledger_path_prefix
+  def compose_cmd = 'docker-compose -p ' + compose_project
 
   properties([
     [$class: 'BuildDiscarderProperty',
-              strategy: [$class: 'LogRotator', numToKeepStr: '5']]
+              strategy: [$class: 'LogRotator', numToKeepStr: '5']],
+    pipelineTriggers([[$class: "TimerTrigger", spec: "H(25-35) 6 * * *"]])
   ])
 
   ansiColor('xterm') {
@@ -16,7 +17,8 @@ node {
     stage ('Clone') {
       checkout scm
     }
-    
+
+/*
     withEnv([
       "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
       "LEDGER_HOST="           + env.LEDGER_HOST,
@@ -33,5 +35,6 @@ node {
     }
     
     }
+*/
   }
 }

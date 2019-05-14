@@ -40,8 +40,3 @@ echo "=============================="
 cat $LINK
 echo "=============================="
 echo
-
-# if [ ! -d "$LEDGER_DUMP_DIRECTORY" ]; then
-#     echo "*** LEDGER_DUMP_DIRECTORY does not exist." 1>&2
-#     exit 1
-# fi
