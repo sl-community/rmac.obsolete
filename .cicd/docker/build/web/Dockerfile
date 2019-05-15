@@ -1,6 +1,5 @@
 ARG BUILD_ENV
 ARG LEDGER_DOCUMENT_ROOT
-ARG BUILD_WEB_PATH
 
 FROM debian:9 AS build_local
 # nothing special to do here. Docroot will be bind-mounted.
@@ -73,7 +72,6 @@ RUN a2enmod cgi rewrite && \
     a2disconf other-vhosts-access-log && \
     rm -f /etc/apache2/sites-available/*
 
-RUN echo "***${BUILD_WEB_PATH}***"
 COPY ${BUILD_WEB_PATH}/apache_sql-ledger.conf /etc/apache2/sites-available/sql-ledger.conf
 
 
