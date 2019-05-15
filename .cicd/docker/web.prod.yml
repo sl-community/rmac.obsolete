@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  web:
+    image: local/rmac/web
+    build:
+      context: ../.. # otherwise COPY would be out of context
+      dockerfile: .cicd/docker/build/web/Dockerfile
+      args:
+        BUILD_ENV: prod
+        BUILD_WEB_PATH: .cicd/docker/build/web
+        LEDGER_DOCUMENT_ROOT:  ${LEDGER_DOCUMENT_ROOT:-/srv/www/sql-ledger}
+        LEDGER_APACHE_RUN_USER:  www-data
+        LEDGER_APACHE_RUN_GROUP: www-data
+    networks:
+      - traefik
+      - private
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik
+      traefik.frontend.rule: "Host:${LEDGER_HOST};PathPrefixStrip:${LEDGER_PATH_PREFIX}"
+      traefik.port: 80
+      traefik.frontend.redirect.entryPoint: https
+    restart: unless-stopped
+
+
+networks:
+  traefik:
+    external: true
+  private:

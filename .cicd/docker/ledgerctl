@@ -1,0 +1,33 @@
+#!/bin/bash
+
+COMPOSE="docker-compose -f web.local.yml -f db.local.yml"
+
+case $1 in
+    up)
+	$COMPOSE up -d --build --force-recreate
+	;;
+    down)
+	$COMPOSE down
+	;;
+    setup)
+	shift
+	$COMPOSE exec web ledgersetup.pl --initweb --setup $1 "$@"
+	;;
+    query)
+	shift
+	$COMPOSE exec web ledgerquery.pl "$@"
+	;;
+    *)
+	cat <<EOF 1>&2 
+Usage: $0 COMMAND
+
+Where COMMAND is one of:
+    up
+    down
+    setup <CONFIG>
+    query <USERNAME> <YAML/KEY> [<BIND_PARAMS>...]
+EOF
+
+	exit 1
+	;;
+esac

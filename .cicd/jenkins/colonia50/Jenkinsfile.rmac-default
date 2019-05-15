@@ -1,0 +1,47 @@
+node {
+
+  def ledger_kind = '/rmac'
+  
+  def ledger_path_prefix = ledger_kind + '/' + env.JOB_NAME;
+
+  def compose_cmd = 'docker-compose -f web.prod.yml -f db.prod.yml -p ' + ledger_path_prefix
+
+  properties([
+    [$class: 'BuildDiscarderProperty',
+              strategy: [$class: 'LogRotator', numToKeepStr: '5']],
+    pipelineTriggers([[$class: "TimerTrigger", spec: "H(25-35) 6 * * *"]])
+  ])
+
+  ansiColor('xterm') {
+
+    stage ('Clone') {
+      def scmVars = checkout scm
+      def branch_name = scmVars.GIT_BRANCH.replace("origin/", "")
+      
+      echo 'Branch name: ' + branch_name
+    }
+
+    withEnv([
+      "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
+    ]) {
+    
+    stage ('Compose') {
+      dir('.cicd/docker') {
+	  sh compose_cmd + ' up -d --force-recreate --build'
+      }
+    }
+    
+    stage ('Setup') {
+      def param_opts = ''
+   
+      params.each {param ->
+        param_opts += " --param ${param.key}=${param.value}"
+      }
+      
+      dir('.cicd/docker') {
+        sh compose_cmd + ' exec -T web ledgersetup.pl --initweb --setup ' + env.JOB_NAME + '.yml' + param_opts
+      }
+    }
+    }
+  }
+}
