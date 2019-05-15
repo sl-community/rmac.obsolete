@@ -23,9 +23,6 @@ node {
 
     withEnv([
       "LEDGER_PATH_PREFIX="    + ledger_path_prefix,
-      //"LEDGER_HOST="           + env.LEDGER_HOST,
-      //"LEDGER_DUMP_DIRECTORY=" + env.LEDGER_DUMP_DIRECTORY
-      //"LEDGER_SETUP_CONFIG="   + './ledgersetup-quickrestore.yml'
     ]) {
     
     stage ('Compose') {
@@ -35,8 +32,14 @@ node {
     }
     
     stage ('Setup') {
+      def param_opts = ''
+   
+      params.each {param ->
+        param_opts += " --param ${param.key}=${param.value}"
+      }
+      
       dir('.cicd/docker') {
-        sh compose_cmd + ' exec -T web ledgersetup.pl --initweb --setup ' + env.JOB_NAME + '.yml'
+        sh compose_cmd + ' exec -T web ledgersetup.pl --initweb --setup ' + env.JOB_NAME + '.yml' + param_opts
       }
     }
     }

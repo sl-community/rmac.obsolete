@@ -49,8 +49,10 @@ eval {
         "initweb",
         "rootpw=s",
         "setup=s",
+        "param=s@",
     ) || die;
-    
+
+    say Dumper(\%opts);
 
     initweb() if exists $opts{initweb};
     
@@ -348,6 +350,9 @@ sub _evaluate {
     if ($expr =~ m/latest_nonempty_dir\((.*)\)/) {
         return latest_nonempty_dir($entry);
     }
+    if ($expr =~ m/param\((.*)\)/) {
+        return param($1);
+    }
 
     # otherwise
     die "Invalid expression: $expr\n";
@@ -393,6 +398,27 @@ sub latest_nonempty_dir {
 
     return $newest_file;
 }
+
+sub param {
+    my ($key) = @_;
+    say STDERR "Parameter lookup: $key";
+
+    my $value;
+
+    if (exists $opts{param}) {
+        foreach my $entry (@{$opts{param}}) {
+            my ($k, $v) = split(/=/, $entry);
+
+            $value = $v if $key eq $k;
+        }
+
+    }
+
+    die "$opts{setup}: No value for key: $key\n" unless defined $value;
+    
+    return $value;
+}
+
 
 
 

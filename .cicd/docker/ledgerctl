@@ -11,7 +11,7 @@ case $1 in
 	;;
     setup)
 	shift
-	$COMPOSE exec web ledgersetup.pl --initweb --setup $1
+	$COMPOSE exec web ledgersetup.pl --initweb --setup $1 "$@"
 	;;
     query)
 	shift
