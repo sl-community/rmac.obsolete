@@ -21,6 +21,8 @@ node {
       compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_path_prefix
 
       echo 'Branch name: ' + branch_name
+
+      println env.JOB_NAME
     }
 
     withEnv([
