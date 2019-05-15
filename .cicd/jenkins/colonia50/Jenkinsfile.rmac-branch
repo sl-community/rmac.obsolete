@@ -1,9 +1,10 @@
 node {
 
   def ledger_kind = '/rmac'
-  def compose_cmd
-  def ledger_path_prefix
-  def scmVars
+  
+  def ledger_path_prefix = ledger_kind + '/' + env.JOB_NAME;
+
+  def compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_path_prefix
 
   properties([
     [$class: 'BuildDiscarderProperty',
@@ -14,15 +15,10 @@ node {
   ansiColor('xterm') {
 
     stage ('Clone') {
-      scmVars = checkout scm
+      def scmVars = checkout scm
       def branch_name = scmVars.GIT_BRANCH.replace("origin/", "")
       
-      ledger_path_prefix = ledger_kind + '/' + branch_name;
-      compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_path_prefix
-
       echo 'Branch name: ' + branch_name
-
-      println env.JOB_NAME
     }
 
     withEnv([
