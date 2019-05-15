@@ -16,11 +16,11 @@ node {
     stage ('Clone') {
       scmVars = checkout scm
       def branch_name = scmVars.GIT_BRANCH.replace("origin/", "")
+      
       ledger_path_prefix = ledger_kind + '/' + branch_name;
       compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_path_prefix
 
-      echo '***' + branch_name
-
+      echo 'Branch name: ' + branch_name
     }
 
     withEnv([
@@ -32,9 +32,8 @@ node {
     
     stage ('Compose') {
       dir('.cicd/docker') {
-	  sh "ls -l"
-	  //sh compose_cmd + ' up -d --force-recreate --build'
-	}
+	  sh compose_cmd + ' up -d --force-recreate --build'
+      }
     }
     
     }
