@@ -12,9 +12,9 @@ ONBUILD COPY --chown=www-data:www-data . ${LEDGER_DOCUMENT_ROOT}
 
 
 
-
 FROM build_${BUILD_ENV}
 ARG LEDGER_DOCUMENT_ROOT
+ARG BUILD_WEB_PATH=.
 
 RUN sed -ri 's/deb\.debian\.org/ftp.uni-kl.de/g' /etc/apt/sources.list
 
@@ -72,7 +72,7 @@ RUN a2enmod cgi rewrite && \
     a2disconf other-vhosts-access-log && \
     rm -f /etc/apache2/sites-available/*
 
-COPY apache_sql-ledger.conf /etc/apache2/sites-available/sql-ledger.conf
+COPY ${BUILD_WEB_PATH}/apache_sql-ledger.conf /etc/apache2/sites-available/sql-ledger.conf
 
 
 RUN a2ensite sql-ledger
