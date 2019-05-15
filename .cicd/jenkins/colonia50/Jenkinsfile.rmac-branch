@@ -36,7 +36,7 @@ node {
     
     stage ('Setup') {
       dir('.cicd/docker') {
-        sh compose_cmd + ' exec web ledgersetup.pl --initweb --setup ' + env.JOB_NAME + '.yml'
+        sh compose_cmd + ' exec -T web ledgersetup.pl --initweb --setup ' + env.JOB_NAME + '.yml'
       }
     }
     }
