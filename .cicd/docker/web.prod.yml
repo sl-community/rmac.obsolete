@@ -20,3 +20,9 @@ services:
       traefik.port: 80
       traefik.frontend.redirect.entryPoint: https
     restart: unless-stopped
+
+
+networks:
+  traefik:
+    external: true
+  private:
