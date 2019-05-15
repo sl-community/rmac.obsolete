@@ -19,7 +19,7 @@ node {
       ledger_path_prefix = ledger_kind + '/' + branch_name;
       compose_cmd = 'docker-compose -f web.prod.yml -p ' + ledger_path_prefix
 
-    println scm.dump()
+    println '+++++++++' + scm.branches[0]
 
     }
 
