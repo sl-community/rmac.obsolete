@@ -4,7 +4,8 @@ services:
   web:
     image: local/rmac/web
     build:
-      context: build/web
+      context: ../..
+      dockerfile: .cicd/docker/build/web/Dockerfile
       args:
         BUILD_ENV: prod
         LEDGER_DOCUMENT_ROOT:  ${LEDGER_DOCUMENT_ROOT:-/srv/www/sql-ledger}
