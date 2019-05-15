@@ -6,7 +6,7 @@ FROM debian:9 AS build_local
 
 
 FROM debian:9 AS build_prod
-ARG LEDGER_DOCUMENT_ROOT
+ONBUILD ARG LEDGER_DOCUMENT_ROOT
 ONBUILD RUN echo ${LEDGER_DOCUMENT_ROOT}
 ONBUILD RUN install -d -o www-data -g www-data     ${LEDGER_DOCUMENT_ROOT}
 ONBUILD COPY --chown=www-data:www-data ../../../.. ${LEDGER_DOCUMENT_ROOT}
