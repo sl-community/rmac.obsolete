@@ -1,4 +1,5 @@
 ARG BUILD_ENV
+ARG LEDGER_DOCUMENT_ROOT
 
 
 FROM debian:9 AS build_local
