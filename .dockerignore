@@ -4,6 +4,7 @@
 .includepath
 .project
 .settings
+.cicd
 users
 spool
 README.md
