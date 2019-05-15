@@ -6,7 +6,6 @@ services:
     build:
       context: build/web
       args:
-        BUILD_ENV: local
         LEDGER_DOCUMENT_ROOT:  ${LEDGER_DOCUMENT_ROOT:-/srv/www/sql-ledger}
         LEDGER_APACHE_RUN_USER:    ${LEDGER_APACHE_RUN_USER}
         LEDGER_APACHE_RUN_USERID:  ${LEDGER_APACHE_RUN_USERID}

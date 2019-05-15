@@ -1,18 +1,23 @@
-ARG BUILD_ENV
-ARG LEDGER_DOCUMENT_ROOT
+#ARG BUILD_ENV
+#ARG LEDGER_DOCUMENT_ROOT
 
-FROM debian:9 AS build_local
+#FROM debian:9 AS build_local
 # nothing special to do here. Docroot will be bind-mounted.
 
 
-FROM debian:9 AS build_prod
-ONBUILD ARG LEDGER_DOCUMENT_ROOT
-ONBUILD RUN install -d -o www-data -g www-data     ${LEDGER_DOCUMENT_ROOT}
-ONBUILD COPY --chown=www-data:www-data . ${LEDGER_DOCUMENT_ROOT}
+#FROM debian:9 AS build_prod
+#ONBUILD ARG LEDGER_DOCUMENT_ROOT
+#ONBUILD RUN install -d -o www-data -g www-data     ${LEDGER_DOCUMENT_ROOT}
+#ONBUILD COPY --chown=www-data:www-data . ${LEDGER_DOCUMENT_ROOT}
 
 
 
-FROM build_${BUILD_ENV}
+#FROM build_${BUILD_ENV}
+
+
+
+FROM debian:9
+
 ARG LEDGER_DOCUMENT_ROOT
 ARG BUILD_WEB_PATH=.
 
@@ -60,6 +65,7 @@ RUN if test "${LEDGER_APACHE_RUN_USER}" != "www-data"; then \
     fi
     
 
+RUN install -d -o ${LEDGER_APACHE_RUN_USER} -g ${LEDGER_APACHE_RUN_GROUP} ${LEDGER_DOCUMENT_ROOT}
 
 ENV APACHE_RUN_DIR=/var/run/apache2 \
     APACHE_PID_FILE=/var/run/apache2/apache2.pid \
@@ -72,7 +78,11 @@ RUN a2enmod cgi rewrite && \
     a2disconf other-vhosts-access-log && \
     rm -f /etc/apache2/sites-available/*
 
+
 COPY ${BUILD_WEB_PATH}/apache_sql-ledger.conf /etc/apache2/sites-available/sql-ledger.conf
+COPY ${BUILD_WEB_PATH}/ledger*.pl  /usr/local/bin/
+
+COPY --chown=www-data:www-data . ${LEDGER_DOCUMENT_ROOT}
 
 
 RUN a2ensite sql-ledger
@@ -82,7 +92,8 @@ RUN ln -sf /dev/stderr /var/log/apache2/access.log && \
 
 EXPOSE 80
 
-COPY ${BUILD_WEB_PATH}/ledger*.pl  /usr/local/bin/
+
+
 
 ENV LEDGER_DOCUMENT_ROOT=${LEDGER_DOCUMENT_ROOT} \
     LEDGER_APACHE_RUN_USER=${LEDGER_APACHE_RUN_USER}
