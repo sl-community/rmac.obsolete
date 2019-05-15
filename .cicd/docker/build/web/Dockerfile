@@ -1,6 +1,6 @@
 ARG BUILD_ENV
 ARG LEDGER_DOCUMENT_ROOT
-
+RUN echo ${LEDGER_DOCUMENT_ROOT}
 
 FROM debian:9 AS build_local
 # nothing special to do here. Docroot will be bind-mounted.
