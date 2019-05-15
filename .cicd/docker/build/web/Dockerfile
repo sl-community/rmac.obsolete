@@ -1,6 +1,5 @@
 ARG BUILD_ENV
 ARG LEDGER_DOCUMENT_ROOT
-RUN echo ${LEDGER_DOCUMENT_ROOT}
 
 FROM debian:9 AS build_local
 # nothing special to do here. Docroot will be bind-mounted.
@@ -8,6 +7,7 @@ FROM debian:9 AS build_local
 
 FROM debian:9 AS build_prod
 ARG LEDGER_DOCUMENT_ROOT
+ONBUILD RUN echo ${LEDGER_DOCUMENT_ROOT}
 ONBUILD RUN install -d -o www-data -g www-data     ${LEDGER_DOCUMENT_ROOT}
 ONBUILD COPY --chown=www-data:www-data ../../../.. ${LEDGER_DOCUMENT_ROOT}
 
