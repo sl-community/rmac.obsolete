@@ -82,7 +82,7 @@ RUN ln -sf /dev/stderr /var/log/apache2/access.log && \
 
 EXPOSE 80
 
-COPY ledger*.pl  /usr/local/bin/
+COPY ${BUILD_WEB_PATH}/ledger*.pl  /usr/local/bin/
 
 ENV LEDGER_DOCUMENT_ROOT=${LEDGER_DOCUMENT_ROOT} \
     LEDGER_APACHE_RUN_USER=${LEDGER_APACHE_RUN_USER}
